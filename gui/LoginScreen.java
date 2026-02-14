@@ -135,7 +135,7 @@ public class LoginScreen extends JFrame {
         }
 
         //Replace with real validation
-        /*if (email.equals("admin") && password.equals("1234")) {
+        if (email.equals("admin") && password.equals("1234")) {
 
             statusLabel.setForeground(new Color(0, 130, 0));
             statusLabel.setText("Login successful!");
@@ -148,6 +148,6 @@ public class LoginScreen extends JFrame {
         } else {
             statusLabel.setForeground(Color.RED);
             statusLabel.setText("Invalid admin credentials!");
-        }*/
+        }
     }
 }

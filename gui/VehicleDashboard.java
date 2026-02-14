@@ -1,20 +1,22 @@
 package gui;
-import java.awt.*;
+
 import javax.swing.*;
 import model.*;
 
-
-
 public class VehicleDashboard extends JFrame {
+
     private Vehicle vehicle;
+    private EntryGate entryGate;
+    private ExitGate exitGate;
     private JTabbedPane tabbedPane;
 
-    public VehicleDashboard(Vehicle vehicle) {
+    public VehicleDashboard(Vehicle vehicle, EntryGate entryGate, ExitGate exitGate) {
         this.vehicle = vehicle;
-        //this.assignedSubmissions = FileService.loadSubmissionsByEvaluator(evaluator.getEvaluatorID());
+        this.entryGate = entryGate;
+        this.exitGate = exitGate;
 
-        setTitle("User Dashboard - " + vehicle.getLicensePlate());
-        setSize(1000, 700);
+        setTitle("Vehicle Dashboard - " + vehicle.getLicensePlate());
+        setSize(900, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -23,36 +25,32 @@ public class VehicleDashboard extends JFrame {
     }
 
     private void initializeComponents() {
-        // Main panel
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new java.awt.BorderLayout());
 
-        // Header panel with vertical layout
+        // Header
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel welcomeLabel = new JLabel("Vehicle: " + vehicle.getLicensePlate());
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        welcomeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        headerPanel.add(welcomeLabel);
+        JLabel lblVehicle = new JLabel("Vehicle: " + vehicle.getLicensePlate());
+        lblVehicle.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 16));
+        lblVehicle.setAlignmentX(LEFT_ALIGNMENT);
 
-        JLabel typeLabel = new JLabel("Vehicle Type: " + vehicle.getVehicleType());
-        typeLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        typeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        headerPanel.add(typeLabel);
+        JLabel lblType = new JLabel("Vehicle Type: " + vehicle.getVehicleType());
+        lblType.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        lblType.setAlignmentX(LEFT_ALIGNMENT);
 
-        
-        // Tabbed pane - simpler
+        headerPanel.add(lblVehicle);
+        headerPanel.add(lblType);
+
+        // Tabs
         tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Entry Process", new EntryPanel(vehicle, entryGate));
+        tabbedPane.addTab("Exit Process", new ExitPanel(vehicle, exitGate));
 
-        tabbedPane.addTab("Entry Process", new EntryPanel(vehicle));
-        tabbedPane.addTab("Exit Process", new ExitPanel(vehicle));
-        
-
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+        mainPanel.add(headerPanel, java.awt.BorderLayout.NORTH);
+        mainPanel.add(tabbedPane, java.awt.BorderLayout.CENTER);
 
         add(mainPanel);
     }
-
 }

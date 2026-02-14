@@ -8,26 +8,37 @@ public class VehicleRegisterScreen extends JFrame {
     private JTextField vehicleNumberField;
     private JComboBox<VehicleType> carTypeBox;
 
+    // Add fields for gates
+    private EntryGate entryGate;
+    private ExitGate exitGate;
+
     public VehicleRegisterScreen() {
         setTitle("Enter Vehicle Details");
         setSize(500, 380);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Initialize building and gates
+        Building building = new Building();
+        CompatibilityRegistry registry = new CompatibilityRegistry();
+        registry.loadDummy();
+        entryGate = new EntryGate(1, building, registry);
+        exitGate = new ExitGate(1, building);
+
         JPanel panel = new JPanel(new GridLayout(6,1,10,10));
         panel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
 
-        //Plate number
+        // Plate number
         panel.add(new JLabel("Vehicle Number:"));
         vehicleNumberField = new JTextField();
         panel.add(vehicleNumberField);
 
-        //Vehicle Type
+        // Vehicle Type
         panel.add(new JLabel("Car Type:"));
         carTypeBox = new JComboBox<>(VehicleType.values());
         panel.add(carTypeBox);
 
-        //Button
+        // Button
         JButton proceedBtn = new JButton("Proceed");
         proceedBtn.addActionListener(e -> openDashboard());
         panel.add(proceedBtn);
@@ -48,8 +59,9 @@ public class VehicleRegisterScreen extends JFrame {
         // Create Vehicle model object
         Vehicle vehicle = new Vehicle(plate, type);
 
-        // Open dashboard and pass vehicle
+        // Open dashboard and pass vehicle + gates
         this.dispose();
-        new VehicleDashboard(vehicle);
+        new VehicleDashboard(vehicle, entryGate, exitGate);
     }
 }
+

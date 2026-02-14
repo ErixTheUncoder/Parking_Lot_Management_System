@@ -3,101 +3,92 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-
 import model.*;
 
 public class EntryPanel extends JPanel {
 
     private Vehicle vehicle;
-    private List<ParkingSpot> availableSpots; // list of spots for this vehicle type
-    private ParkingSpot selectedSpot;
+    private EntryGate entryGate;
 
-    // Ticket fields
+    private JComboBox<String> spotDropdown;
     private JTextField ticketIdField;
     private JTextField entryTimeField;
-    private JTextField spotField;
+    private JTextField ticketSpotField;
 
-    public EntryPanel(Vehicle vehicle, List<ParkingSpot> allSpots) {
+    public EntryPanel(Vehicle vehicle, EntryGate entryGate) {
         this.vehicle = vehicle;
+        this.entryGate = entryGate;
 
         setLayout(new BorderLayout(15, 15));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Filter available spots for this vehicle type
-        availableSpots = allSpots.stream()
-                .filter(spot -> !spot.isOccupied() && spot.getVehicleType() == vehicle.getVehicleType())
-                .toList();
+        add(createMainPanel(), BorderLayout.CENTER);
+    }
 
-        // ===== TOP PANEL: Available Spots =====
-        JPanel spotsPanel = new JPanel(new BorderLayout());
-        spotsPanel.setBorder(BorderFactory.createTitledBorder("Available Parking Spots"));
+    private JPanel createMainPanel() {
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        mainPanel.add(createAvailableSpotPanel());
+        mainPanel.add(createTicketPanel());
+        return mainPanel;
+    }
 
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (ParkingSpot spot : availableSpots) {
-            listModel.addElement(spot.getSpotId());
+    private JPanel createAvailableSpotPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.setBorder(BorderFactory.createTitledBorder(
+                "Select Available Spot for: " + vehicle.getVehicleType()));
+
+        List<Spot> allowedSpots = entryGate.findAvailableSpots(vehicle.getVehicleType());
+        String[] spotIDs = allowedSpots.stream().map(Spot::getSpotID).toArray(String[]::new);
+        spotDropdown = new JComboBox<>(spotIDs);
+        spotDropdown.setPreferredSize(new Dimension(200, 25));
+
+        panel.add(new JLabel("Available Spots:"));
+        panel.add(spotDropdown);
+
+        JButton reserveBtn = new JButton("Reserve Spot & Generate Ticket");
+        reserveBtn.addActionListener(e -> handleReserveSpot());
+        panel.add(reserveBtn);
+
+        return panel;
+    }
+
+    private JPanel createTicketPanel() {
+        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
+        panel.setBorder(BorderFactory.createTitledBorder("Ticket"));
+
+        panel.add(new JLabel("Ticket ID:"));
+        ticketIdField = new JTextField(); ticketIdField.setEditable(false);
+        panel.add(ticketIdField);
+
+        panel.add(new JLabel("Entry Time:"));
+        entryTimeField = new JTextField(); entryTimeField.setEditable(false);
+        panel.add(entryTimeField);
+
+        panel.add(new JLabel("Spot:"));
+        ticketSpotField = new JTextField(); ticketSpotField.setEditable(false);
+        panel.add(ticketSpotField);
+
+        return panel;
+    }
+
+    private void handleReserveSpot() {
+        String selectedSpotID = (String) spotDropdown.getSelectedItem();
+        if (selectedSpotID == null) {
+            JOptionPane.showMessageDialog(this, "Please select a spot.");
+            return;
         }
 
-        JList<String> spotList = new JList<>(listModel);
-        spotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(spotList);
+        Ticket ticket = entryGate.processEntry(vehicle, selectedSpotID);
+        if (ticket == null) {
+            JOptionPane.showMessageDialog(this, "Selected spot is no longer available.");
+            return;
+        }
 
-        spotsPanel.add(scrollPane, BorderLayout.CENTER);
+        ticketIdField.setText(ticket.getTicketID());
+        entryTimeField.setText(ticket.getEntryTimeFormatted());
+        ticketSpotField.setText(ticket.getSpot().getSpotID());
 
-        // ===== CENTER PANEL: Ticket Details =====
-        JPanel ticketPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-        ticketPanel.setBorder(BorderFactory.createTitledBorder("Ticket"));
-
-        ticketPanel.add(new JLabel("Ticket ID:"));
-        ticketIdField = new JTextField();
-        ticketIdField.setEditable(false);
-        ticketPanel.add(ticketIdField);
-
-        ticketPanel.add(new JLabel("Entry Time:"));
-        entryTimeField = new JTextField();
-        entryTimeField.setEditable(false);
-        ticketPanel.add(entryTimeField);
-
-        ticketPanel.add(new JLabel("Spot:"));
-        spotField = new JTextField();
-        spotField.setEditable(false);
-        ticketPanel.add(spotField);
-
-        // ===== BOTTOM PANEL: Actions =====
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton selectSpotBtn = new JButton("Select Spot and Generate Ticket");
-
-        selectSpotBtn.addActionListener(e -> {
-            int selectedIndex = spotList.getSelectedIndex();
-            if (selectedIndex == -1) {
-                JOptionPane.showMessageDialog(this, "Please select a parking spot!");
-                return;
-            }
-
-            selectedSpot = availableSpots.get(selectedIndex);
-
-            // Mark the spot as occupied
-            selectedSpot.setOccupied(true);
-
-            // Generate ticket info
-            LocalDateTime now = LocalDateTime.now();
-            String ticketId = "T-" + vehicle.getLicensePlate() + "-" +
-                    now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-
-            ticketIdField.setText(ticketId);
-            entryTimeField.setText(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-            spotField.setText(selectedSpot.getSpotId());
-
-            JOptionPane.showMessageDialog(this, "Ticket generated successfully!");
-        });
-
-        actionPanel.add(selectSpotBtn);
-
-        // ===== Combine Panels =====
-        add(spotsPanel, BorderLayout.NORTH);
-        add(ticketPanel, BorderLayout.CENTER);
-        add(actionPanel, BorderLayout.SOUTH);
+        JOptionPane.showMessageDialog(this, "Spot reserved! Ticket generated.");
     }
 }

@@ -3,140 +3,222 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
-import model.*;
+import java.time.format.DateTimeFormatter;
+
+import model.Vehicle;
+import model.ExitGate;
+import model.Ticket;
+import model.Invoice;
 
 public class ExitPanel extends JPanel {
-    private Vehicle vehicle;
 
-    public ExitPanel(Vehicle vehicle) {
+    private Vehicle vehicle;
+    private ExitGate exitGate;
+
+    //Parking Details Fields
+    private JTextField plateField;
+    private JTextField hoursField;
+    private JTextField baseFeeField;
+    private JTextField discountField;
+    private JTextField totalDueField;
+
+    //Payment Fields
+    private JRadioButton cashRadio;
+    private JRadioButton cardRadio;
+    private JTextField cardNumberField;
+    private JTextField cvcField;
+
+    //Receipt Fields
+    private JLabel invoiceLabel;
+    private JLabel entryTimeLabel;
+    private JLabel durationLabel;
+    private JLabel feesLabel;
+
+
+    // CONSTRUCTOR
+    public ExitPanel(Vehicle vehicle, ExitGate exitGate) {
         this.vehicle = vehicle;
+        this.exitGate = exitGate;
 
         setLayout(new BorderLayout(15, 15));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // ===== TOP PANEL: Parking Details =====
-        JPanel parkingDetailsPanel = new JPanel(new GridLayout(5, 2, 10, 10));
-        parkingDetailsPanel.setBorder(BorderFactory.createTitledBorder("Parking Details"));
+        add(createMainPanel(), BorderLayout.CENTER);
+    }
 
-        parkingDetailsPanel.add(new JLabel("License Plate:"));
-        JTextField plateField = new JTextField(vehicle.getLicensePlate());
+ 
+    // BUILD MAIN PANEL
+    private JPanel createMainPanel() {
+
+        JPanel centerPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+
+        centerPanel.add(createParkingDetailsPanel());
+        centerPanel.add(createPaymentPanel());
+        centerPanel.add(createReceiptPanel());
+
+        return centerPanel;
+    }
+
+  
+    // 1) PARKING DETAILS PANEL
+    private JPanel createParkingDetailsPanel() {
+
+        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+        panel.setBorder(BorderFactory.createTitledBorder("Parking Details"));
+
+        panel.add(new JLabel("License Plate:"));
+        plateField = new JTextField(vehicle.getLicensePlate());
         plateField.setEditable(false);
-        parkingDetailsPanel.add(plateField);
+        panel.add(plateField);
 
-        parkingDetailsPanel.add(new JLabel("Hours Parked:"));
-        JTextField hoursField = new JTextField();
+        panel.add(new JLabel("Hours Parked:"));
+        hoursField = new JTextField();
         hoursField.setEditable(false);
-        parkingDetailsPanel.add(hoursField);
+        panel.add(hoursField);
 
-        parkingDetailsPanel.add(new JLabel("Parking Fee:"));
-        JTextField feeField = new JTextField();
-        feeField.setEditable(false);
-        parkingDetailsPanel.add(feeField);
+        panel.add(new JLabel("Base Fee:"));
+        baseFeeField = new JTextField();
+        baseFeeField.setEditable(false);
+        panel.add(baseFeeField);
 
-        parkingDetailsPanel.add(new JLabel("Any Unpaid Fees:"));
-        JTextField unpaidField = new JTextField();
-        unpaidField.setEditable(false);
-        parkingDetailsPanel.add(unpaidField);
+        panel.add(new JLabel("Discount:"));
+        discountField = new JTextField();
+        discountField.setEditable(false);
+        panel.add(discountField);
 
-        parkingDetailsPanel.add(new JLabel("Total Payment Due:"));
-        JTextField totalField = new JTextField();
-        totalField.setEditable(false);
-        parkingDetailsPanel.add(totalField);
+        panel.add(new JLabel("Total Payment Due:"));
+        totalDueField = new JTextField();
+        totalDueField.setEditable(false);
+        panel.add(totalDueField);
 
-        // ===== MIDDLE PANEL: Payment =====
-        JPanel paymentPanel = new JPanel(new GridLayout(5, 2, 10, 10));
-        paymentPanel.setBorder(BorderFactory.createTitledBorder("Make Payment"));
+        return panel;
+    }
 
-        JRadioButton cashRadio = new JRadioButton("Cash");
-        JRadioButton cardRadio = new JRadioButton("Card");
-        ButtonGroup paymentGroup = new ButtonGroup();
-        paymentGroup.add(cashRadio);
-        paymentGroup.add(cardRadio);
+
+    // 2) PAYMENT PANEL
+    private JPanel createPaymentPanel() {
+
+        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+        panel.setBorder(BorderFactory.createTitledBorder("Make Payment"));
+
+        cashRadio = new JRadioButton("Cash");
+        cardRadio = new JRadioButton("Card");
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(cashRadio);
+        group.add(cardRadio);
+
         cashRadio.setSelected(true);
 
-        paymentPanel.add(new JLabel("Payment Method:"));
+        panel.add(new JLabel("Payment Method:"));
         JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         radioPanel.add(cashRadio);
         radioPanel.add(cardRadio);
-        paymentPanel.add(radioPanel);
+        panel.add(radioPanel);
 
         // Card fields
         JLabel cardNumberLabel = new JLabel("Card Number:");
-        JTextField cardNumberField = new JTextField();
+        cardNumberField = new JTextField();
         JLabel cvcLabel = new JLabel("CVC:");
-        JTextField cvcField = new JTextField();
+        cvcField = new JTextField();
 
-        paymentPanel.add(cardNumberLabel);
-        paymentPanel.add(cardNumberField);
-        paymentPanel.add(cvcLabel);
-        paymentPanel.add(cvcField);
+        panel.add(cardNumberLabel);
+        panel.add(cardNumberField);
+        panel.add(cvcLabel);
+        panel.add(cvcField);
 
-        // Hide card fields initially
-        cardNumberLabel.setVisible(false);
-        cardNumberField.setVisible(false);
-        cvcLabel.setVisible(false);
-        cvcField.setVisible(false);
+        setCardFieldsVisible(false);
 
-        cashRadio.addActionListener(e -> {
-            cardNumberLabel.setVisible(false);
-            cardNumberField.setVisible(false);
-            cvcLabel.setVisible(false);
-            cvcField.setVisible(false);
-        });
-        cardRadio.addActionListener(e -> {
-            cardNumberLabel.setVisible(true);
-            cardNumberField.setVisible(true);
-            cvcLabel.setVisible(true);
-            cvcField.setVisible(true);
-        });
+        cashRadio.addActionListener(e -> setCardFieldsVisible(false));
+        cardRadio.addActionListener(e -> setCardFieldsVisible(true));
 
-        JButton payButton = new JButton("Pay");
-        paymentPanel.add(payButton);
+        JButton payButton = new JButton("Pay & Exit");
+        payButton.addActionListener(e -> handleExitPayment());
+        panel.add(payButton);
 
-        // ===== BOTTOM PANEL: Receipt =====
-        JPanel receiptPanel = new JPanel(new GridLayout(5, 1, 5, 5));
-        receiptPanel.setBorder(BorderFactory.createTitledBorder("Receipt"));
+        return panel;
+    }
 
-        JLabel invoiceLabel = new JLabel("Invoice: ");
-        JLabel entryTimeLabel = new JLabel("Entry Time: ");
-        JLabel durationLabel = new JLabel("Duration: ");
-        JLabel feesLabel = new JLabel("Fees/Fines: ");
+    // 3) RECEIPT PANEL
+    private JPanel createReceiptPanel() {
+
+        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
+        panel.setBorder(BorderFactory.createTitledBorder("Receipt"));
+
+        invoiceLabel = new JLabel("Invoice: ");
+        entryTimeLabel = new JLabel("Entry Time: ");
+        durationLabel = new JLabel("Duration: ");
+        feesLabel = new JLabel("Fees/Fines: ");
+
         JButton downloadBtn = new JButton("Download Receipt");
+        downloadBtn.addActionListener(
+                e -> JOptionPane.showMessageDialog(this, "Receipt downloaded!")
+        );
 
-        receiptPanel.add(invoiceLabel);
-        receiptPanel.add(entryTimeLabel);
-        receiptPanel.add(durationLabel);
-        receiptPanel.add(feesLabel);
-        receiptPanel.add(downloadBtn);
+        panel.add(invoiceLabel);
+        panel.add(entryTimeLabel);
+        panel.add(durationLabel);
+        panel.add(feesLabel);
+        panel.add(downloadBtn);
 
-        // ===== Pay Button Action =====
-        payButton.addActionListener(e -> {
-            String method = cashRadio.isSelected() ? "Cash (Pay at counter)" : "Card";
+        return panel;
+    }
 
-            if (cardRadio.isSelected()) {
-                if (cardNumberField.getText().trim().isEmpty() || cvcField.getText().trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Enter card number and CVC!");
-                    return;
-                }
-            }
 
-            invoiceLabel.setText("Invoice: INV-" + plateField.getText() + "-" +
-                    LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
-            entryTimeLabel.setText("Entry Time: 2026-02-14 10:00"); // placeholder
-            durationLabel.setText("Duration: 3h"); // placeholder
-            feesLabel.setText("Fees/Fines: $12"); // placeholder
+    // HELPER: SHOW/HIDE CARD FIELDS
+    private void setCardFieldsVisible(boolean visible) {
+        cardNumberField.setVisible(visible);
+        cvcField.setVisible(visible);
+    }
 
-            JOptionPane.showMessageDialog(this, "Payment successful via " + method);
-        });
 
-        downloadBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "Receipt downloaded!"));
+    // PAYMENT LOGIC USING ExitGate
+    private void handleExitPayment() {
 
-        // ===== Combine Panels =====
-        JPanel centerPanel = new JPanel(new GridLayout(3, 1, 10, 10));
-        centerPanel.add(parkingDetailsPanel);
-        centerPanel.add(paymentPanel);
-        centerPanel.add(receiptPanel);
+        // Step 1: Retrieve ticket
+        Ticket ticket = exitGate.retrieveTicket(vehicle.getLicensePlate());
+        if (ticket == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Ticket not found! Cannot process exit.");
+            return;
+        }
 
-        add(centerPanel, BorderLayout.CENTER);
+        // Step 2: Base price calculation
+        double basePrice = exitGate.calculateBasePrice(ticket, ticket.getSpot().getSpotType());
+        // Step 3: Floor premium
+        double floorPremium = ticket.getSpot().getFloor().getExtraCharge();
+        double subtotal = basePrice + floorPremium;
+
+        // Step 4: Apply discount
+        double discount = exitGate.applyDiscount(subtotal);
+        double discountedTotal = subtotal - discount;
+
+        // Step 5: Fines
+        double fines = exitGate.retrieveFines(vehicle.getLicensePlate());
+
+        // Step 6: Generate Invoice
+        Invoice invoice = exitGate.generateInvoice(ticket, basePrice, floorPremium, discount, fines);
+
+        // Step 7: Commit and release spot
+        boolean success = exitGate.commitInvoice(invoice);
+        if (!success) {
+            JOptionPane.showMessageDialog(this,
+                    "Error committing payment. Try again.");
+            return;
+        }
+
+        // Update UI fields
+        hoursField.setText(String.valueOf(ticket.getDurationHours()));
+        baseFeeField.setText(String.format("$%.2f", basePrice));
+        discountField.setText(String.format("$%.2f", discount));
+        totalDueField.setText(String.format("$%.2f", invoice.getTotalAmount()));
+
+        invoiceLabel.setText("Invoice: " + invoice.getInvoiceID());
+        entryTimeLabel.setText("Entry Time: " + ticket.getEntryTimeFormatted());
+        durationLabel.setText("Duration: " + ticket.getDurationHours() + "h");
+        feesLabel.setText("Fees/Fines: $" + fines);
+
+        JOptionPane.showMessageDialog(this,
+                "Payment successful. Vehicle may exit.");
     }
 }
