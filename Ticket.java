@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 
 /**
- * Ticket - Transaction & Billing Class (The "Audit")
+ * Ticket -  Class for tracking & Audit
  * 
  * DESCRIPTION:
  * Acts as "The Bridge" connecting a vehicle's license plate to its assigned
@@ -17,14 +17,14 @@ import java.time.LocalDateTime;
  * 1. Created by EntryGate when vehicle enters
  * 2. Stored in database during parking stay
  * 3. Retrieved by ExitGate using license plate
- * 4. Used to calculate charges and generate Invoice
+ * 4. Used to calculate charges and generate Invoice by ExitGate
  * 5. Archived after exit for historical records
  * 
- * AUDIT ROLE:
+ * ADMIN Checking benefits :
  * The Ticket is the immutable record of when and where a vehicle parked.
  * It enables:
  * - Calculating parking duration
- * - Identifying which spot was used
+ * - Identifying which spot was used by exitGate
  * - Tracking vehicle movements
  * - Resolving disputes
  * 
@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
  * - Retrieved by ExitGate
  * - References Vehicle via licensePlate
  * - References Spot via spotID
- * - Used to generate Invoice
+ * - Used to generate Invoice by exitGate
  */
 public class Ticket {
     
@@ -49,16 +49,23 @@ public class Ticket {
     private String licensePlate;
     
     /**
-     * Assigned parking spot ID (foreign key to spot)
-     */
-    private int spotID;
-    
-    /**
      * Timestamp when vehicle entered and ticket was issued
      * Used for duration calculation at exit
      */
     private LocalDateTime entryTimestamp;
+
+ 
+   /**
+     * Assigned parking spot ID (foreign key to spot)
+    /*
+    private String spotID;//<<<<< spotID is a string as it is made of format "F1-R2-S3"(floor1,row2,spot3)
+    */ //[Note : this is not kept as it is hard to lookup in DB]
+
+       /*****************************************************/
+    private long DBspotID;    //<<<<this is used to make connection with datbase primary key which is fast working with 
     
+    //the above is set by the entryGate to keep the track as a FOREIGN kEY IN THE DB. 
+
     /**
      * Constructor
      * 
@@ -67,11 +74,16 @@ public class Ticket {
      * 
      * TODO: Generate unique ticketID (UUID or sequential)
      * TODO: Set licensePlate
-     * TODO: Set spotID
+     * TODO: Set DBspotID
      * TODO: Record current timestamp as entryTimestamp
      * TODO: Validate parameters are not null/invalid
      */
-    public Ticket(String licensePlate, int spotID) {
+    public Ticket(String licensePlate, long DBspotID) {   //long is used for having more range of number
+        // TODO: Implementation
+    }
+
+    //used by DBservice for remaking the object from database 
+    public Ticket(String tickID, long spotID , String licenId, LocalDateTime entryT){
         // TODO: Implementation
     }
     
@@ -106,7 +118,7 @@ public class Ticket {
      * 
      * TODO: Implement getter
      */
-    public int getSpotID() {
+    public long getSpotID() {
         // TODO: Implementation
         return 0;
     }
