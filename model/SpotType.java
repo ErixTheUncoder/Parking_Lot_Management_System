@@ -46,11 +46,11 @@ public enum SpotType {
     LARGE,
     
     /**
-     * Electric Vehicle charging spot
+     * Parking spot for  Vehicle with reservation 
      * 
      * TODO: Define this enum constant
      */
-    EV,
+    RESERVED,
     
     /**
      * Handicapped/accessible parking spot
