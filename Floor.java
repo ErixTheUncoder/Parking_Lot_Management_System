@@ -1,6 +1,7 @@
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Floor - Structural Class ("Pillar")
  * 
@@ -61,7 +62,16 @@ public class Floor {
      * loading floor layout from database/configuration(loader class) >>use the below constructor to initialise Floor obj
      */
     public Floor(int floorNumber , List<List<Spot>>R) {
-        // TODO: Implementation
+      this.floorNumber = floorNumber;
+      this.rows = R;
+
+          // Initialize flatAccess map
+      this.flatAccess = new HashMap<>();
+      for (List<Spot> row : R) {
+        for (Spot spot : row) {
+            this.flatAccess.put(spot.getDBSpotID(), spot);
+        }
+    }
     }
     
     /**
@@ -76,7 +86,42 @@ public class Floor {
      */
     public List<Long> findAvailableSpot(SpotType type) {                   //<<<this will be a list of spot IDS 
                                                                         //each spotID is unique in system and belongs to one floor only
-        // TODO: Implementation
+        try {
+        switch(type){
+          case SpotType.RESERVED -> { //
+            List<Long> reservedSpotIDs = flatSearchMap.get(SpotType.RESERVED);
+            return reservedSpotIDs;
+            }
+
+          case SpotType.COMPACT -> {
+            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+            return compactSpotIDs;
+            }
+
+          case SpotType.HANDICAPPED -> {
+            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+            return compactSpotIDs;
+            }
+
+          case SpotType.LARGE -> {
+            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+            return compactSpotIDs;
+                }
+          
+          case SpotType.REGULAR -> {
+            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+            return compactSpotIDs;
+                }
+          
+          default  -> {
+            System.out.println("Unable to find Spot for this type");
+            break;
+          }
+        }
+        } catch (Exception e) {
+          System.out.println(e);
+        }
+
         return null;
     }
     
@@ -90,9 +135,10 @@ public class Floor {
      * TODO: Consider maintaining a separate Map<long, Spot> for O(1) access by ID  <<<<<<<<
      * TODO: Handle invalid spot IDs
      */
-    public Spot getSpot(long  DBspotID) {              //this is used by exitGate or Admin to get a specific spot only
+    public Spot getSpot(long DBspotID) {              //this is used by exitGate or Admin to get a specific spot only
                                                     //this is used by entryGate to access the selected spot by customer and modify it      
         // TODO: Implementation
-        return null;
+        return flatAccess.get(DBspotID);  // O(1) lookup, returns null if not found
+
     }
 }

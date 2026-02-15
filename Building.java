@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>an important note:this is fully loaded in the beginning of programme using another class StructureLoad 
 // that class uses the constructor provided in this class
 
@@ -27,7 +26,7 @@ public class Building {
      * Collection of all floors in the building
      */
     private List<Floor> floors;       //we might need to implement it with ArrayList[pre-allocate floor number to make it better] here !(optional)
-    
+
     /**
      * Constructor
      * 
@@ -38,6 +37,7 @@ public class Building {
         this.floors = new ArrayList<>(fList);         //making a new ArrayList and copying the parameter into it to avoid global modify 
                                                     //c++ we have issue with pass by refrence,same logic to avoid that
         // TODO: Implementation
+
     }
 
     
@@ -45,7 +45,7 @@ public class Building {
      * Retrieve a specific floor by its number              //access existing floor [floor ID is simple INT]
      * 
      * @param floorNumber The floor number to retrieve
-     * @return The Floor object, or null if not found           <<error handlind logic!
+     * @return The Floor object, or null if not found           <<error handling logic!
      * 
      * TODO: Implement floor retrieval logic
      * TODO: Handle case when floor number doesn't exist
@@ -53,5 +53,13 @@ public class Building {
     public Floor getFloor(int floorNumber) {            //<<getter method here! used from CONTROLLER 
         // TODO: Implementation
         return null;
+    }
+
+
+    public void main(String arg[]){
+      //Testing Data
+
+      Building FCI = new Building()
+      System.out.println("");
     }
 }
