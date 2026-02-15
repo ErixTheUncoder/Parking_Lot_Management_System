@@ -138,7 +138,6 @@ public class Floor {
      */
     public Spot getSpot(long DBspotID) {              //this is used by exitGate or Admin to get a specific spot only
                                                     //this is used by entryGate to access the selected spot by customer and modify it      
-        // TODO: Implementation
         return flatAccess.get(DBspotID);  // O(1) lookup, returns null if not found
 
     }
