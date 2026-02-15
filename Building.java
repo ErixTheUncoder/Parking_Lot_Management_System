@@ -50,11 +50,11 @@ public class Building {
      * TODO: Implement floor retrieval logic
      * TODO: Handle case when floor number doesn't exist
      */
-    public Floor getFloor(int floorNumber) {            //<<getter method here! used from CONTROLLER 
-        if((floors.size())>=floorNumber){
-          return floors.get(floorNumber);
+    public Floor getFloor(int index) {            //<<getter method here! used from CONTROLLER 
+        if (index >= 0 && index < floors.size()) {
+        return floors.get(index);
         }else{
-          System.out.println("getFloor unable to find floor");
+          System.out.println("Error: Floor index " + index + " out of bounds.");
         }
         return null;
     }

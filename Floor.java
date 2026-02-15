@@ -163,4 +163,95 @@ public class Floor {
     public int getFloorNumber() {
         return floorNumber;
     }
+    
+    /**
+     * Get all spots on this floor
+     * 
+     * @return Collection of all spots
+     */
+    public List<Spot> getAllSpots() {
+        return new ArrayList<>(flatAccess.values());
+    }
+    
+    /**
+     * Get total number of spots on this floor
+     * 
+     * @return Total spot count
+     */
+    public int getTotalSpotCount() {
+        return flatAccess.size();
+    }
+    
+    /**
+     * Get number of available spots on this floor
+     * 
+     * @return Available spot count
+     */
+    public int getAvailableSpotCount() {
+        int count = 0;
+        for (Spot spot : flatAccess.values()) {
+            if (!spot.isOccupied() && !spot.getStatus()) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * Get number of occupied spots on this floor
+     * 
+     * @return Occupied spot count
+     */
+    public int getOccupiedSpotCount() {
+        int count = 0;
+        for (Spot spot : flatAccess.values()) {
+            if (spot.isOccupied()) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * Get count of spots by type (all spots, not just available)
+     * 
+     * @param type The spot type to count
+     * @return Number of spots of that type
+     */
+    public int getSpotCountByType(SpotType type) {
+        int count = 0;
+        for (Spot spot : flatAccess.values()) {
+            if (spot.getSpotType() == type) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * Get count of available spots by type
+     * 
+     * @param type The spot type to count
+     * @return Number of available spots of that type
+     */
+    public int getAvailableSpotCountByType(SpotType type) {
+        List<Long> availableSpots = flatSearchMap.get(type);
+        return (availableSpots != null) ? availableSpots.size() : 0;
+    }
+    
+    /**
+     * Get count of occupied spots by type
+     * 
+     * @param type The spot type to count
+     * @return Number of occupied spots of that type
+     */
+    public int getOccupiedSpotCountByType(SpotType type) {
+        int count = 0;
+        for (Spot spot : flatAccess.values()) {
+            if (spot.getSpotType() == type && spot.isOccupied()) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
