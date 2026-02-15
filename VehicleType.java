@@ -26,36 +26,51 @@ public enum VehicleType {
      * 
      * TODO: Define this enum constant
      */
-    MOTORCYCLE,
+    MOTORCYCLE("Motorcycle"),
     
     /**
      * Standard car/sedan
      * 
      * TODO: Define this enum constant
      */
-    CAR,
+    CAR("Car"),
     
     /**
      * Sport Utility Vehicle - larger than standard car
      * 
      * TODO: Define this enum constant
      */
-    SUV,
+    SUV("SUV"),
     
     /**
      * Truck - largest regular vehicle type
      * 
      * TODO: Define this enum constant
      */
-    TRUCK,
+    TRUCK("Truck"),
     
     /**
      * Handicapped vehicle - special type of vehicle 
      * 
      * TODO: Define this enum constant
      */
-    HANDICAPPED;
+    HANDICAPPED("Handicapped");
     
     // TODO: Consider adding display names or descriptions
     // TODO: Consider adding methods to get human-readable labels
+    
+    private final String displayName;
+    
+    VehicleType(String displayName) {
+        this.displayName = displayName;
+    }
+    
+    public String getDisplayName() {
+        return displayName;
+    }
+    
+    @Override
+    public String toString() {
+        return displayName;
+    }
 }
