@@ -74,6 +74,17 @@ public class Spot {
     public Spot(long DBspotID, SpotType spotType , boolean isOccup , String currV, int floorN , int rowN , int spotN) {
         //concatenate the spotName usinf floorN,rowN,spotN<<<<<<<<<<<<<<<<
         // TODO: Implementation
+        this.DBspotID = DBspotID;
+        this.spotType = spotType;
+        this.isOccupied = isOccup;
+        this.currentVehicle = currV;
+        this.floorNum = floorN;
+        this.rowNum = rowN;
+        this.spotNum = spotN;
+        this.isClosed = false;
+
+        this.spotName = String.format("F%d-R%d-S%d",floorN,rowN,spotN);
+
     }
     
     /**
@@ -84,8 +95,7 @@ public class Spot {
      * TODO: Implement getter
      */
     public long getDBSpotID() {
-        // TODO: Implementation
-        return 0;
+        return DBspotID;
     }
     
     /**
@@ -96,8 +106,7 @@ public class Spot {
      * TODO: Implement getter
      */
     public SpotType getSpotType() {
-        // TODO: Implementation
-        return null;
+        return spotType;
     }
     
     /**
@@ -108,8 +117,7 @@ public class Spot {
      * TODO: Implement getter
      */
     public boolean isOccupied() {   
-        // TODO: Implementation
-        return false;
+        return isOccupied;
     }
     
     /**
@@ -122,11 +130,12 @@ public class Spot {
      * TODO: Consider adding validation or logging
      */
     public void setOccupied(boolean occupied , String currV) {  
-        // TODO: Implementation
+        this.isOccupied = occupied;
+        this.currentVehicle = currV;
     }
 
-    public boolean getStatus(){
-        return  isClosed;
+    public boolean getStatus(){ 
+        return isClosed;
     }
     public String getCurrentVehicle(){
         //error handling 
