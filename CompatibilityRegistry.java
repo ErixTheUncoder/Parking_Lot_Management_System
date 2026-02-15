@@ -2,7 +2,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * CompatibilityRegistry - Registry & Logic Class (The "Expert")
+ * CompatibilityRegistry - Registry & Logic Class ("Expert")
  * 
  * DESCRIPTION:
  * Central Source of Truth for vehicle-to-spot compatibility rules.
@@ -10,24 +10,26 @@ import java.util.Map;
  * 
  * ARCHITECTURE:
  * - Map<VehicleType, List<SpotType>>: Maps each vehicle type to allowed spot types
- * - Database-backed: Loaded at startup, can be refreshed
  * - Enables dynamic rules: Easy to update compatibility without code changes
  * 
- * DESIGN PRINCIPLE:
+ * //============================================================
+ *   RULES for now hardcoded:
+    1.Motorcycle - Can park in Compact spots only
+    2.Car - Can park in Compact or Regular spots
+    3.SUV/Truck - Can park in Regular spots only
+    4.Handicapped Vehicle - Can park in any spot
+ * //=============================================================
+ * 
+ * DESIGN PRINCIPLE: FUTURE consideration
  * Allows the system to be dynamic. For example, if a "Small Car" is suddenly
- * allowed to park in an "EV" spot, we just update the database and reload
+ * allowed to park in a new spot named "EV" spot, we just update the database and reload
  * this registry. No code changes needed.
- * 
- * FLEXIBILITY EXAMPLES:
- * - Motorcycles can use Compact, Regular, or Motorcycle-specific spots
- * - Electric cars can use EV spots AND their size-appropriate regular spots
- * - Handicapped permits can use any spot type
- * 
+ *  it will be Database-backed: Loaded at startup, can be refreshed    
+ 
  * RELATIONSHIPS:
  * - Uses VehicleType enum as key
  * - Uses SpotType enum as values
  * - Used by EntryGate to determine allowed spot types for a vehicle
- * - Loaded from database at system startup
  */
 public class CompatibilityRegistry {
     
@@ -36,32 +38,26 @@ public class CompatibilityRegistry {
      * Key: VehicleType enum
      * Value: List of allowed SpotTypes for that vehicle
      */
-    private Map<VehicleType, List<SpotType>> compatibilityMap;
+     //"hardcoded config that shouldn't change"
+ //check it please again!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    private Map<VehicleType, List<SpotType>> AllowedSpotType= Map.of(
+    VehicleType.MOTORCYCLE, List.of(SpotType.COMPACT),
+    VehicleType.CAR, List.of(SpotType.COMPACT, SpotType.REGULAR),
+    VehicleType.SUV, List.of(SpotType.REGULAR),
+    VehicleType.TRUCK, List.of(SpotType.REGULAR),
+    VehicleType.HANDICAPPED, List.of(SpotType.HANDICAPPED, SpotType.REGULAR)
+    );                   
     
     /**
      * Constructor
      * 
-     * TODO: Initialize the compatibilityMap
-     * TODO: Consider calling loadFromDatabase() in constructor
+     * TODO: Initialize the AllowedSpotType
      * TODO: Handle initialization errors gracefully
      */
     public CompatibilityRegistry() {
         // TODO: Implementation
     }
     
-    /**
-     * Load compatibility rules from the database
-     * Called at startup and when rules need to be refreshed
-     * 
-     * TODO: Query database for all vehicle-spot compatibility rules
-     * TODO: Populate the compatibilityMap
-     * TODO: Handle database connection errors
-     * TODO: Validate that all VehicleTypes have at least one allowed SpotType
-     * TODO: Log successful load and any warnings
-     */
-    public void loadFromDatabase() {
-        // TODO: Implementation
-    }
     
     /**
      * Get all allowed spot types for a specific vehicle type
@@ -69,10 +65,9 @@ public class CompatibilityRegistry {
      * @param vehicleType The type of vehicle
      * @return List of allowed SpotTypes, or empty list if not found
      * 
-     * TODO: Look up allowed types in compatibilityMap
+     * TODO: Look up allowed types in AllowedSpotType
      * TODO: Handle case when vehicle type is not in registry
      * TODO: Return defensive copy of list to prevent external modification
-     * TODO: Consider sorting list by preference/priority
      */
     public List<SpotType> getAllowedSpotTypes(VehicleType vehicleType) {
         // TODO: Implementation
@@ -89,7 +84,6 @@ public class CompatibilityRegistry {
      * TODO: Get allowed types for the vehicle
      * TODO: Check if spotType is in the allowed list
      * TODO: Handle null parameters
-     * TODO: Consider caching results for frequently checked combinations
      */
     public boolean isCompatible(VehicleType vehicleType, SpotType spotType) {
         // TODO: Implementation
