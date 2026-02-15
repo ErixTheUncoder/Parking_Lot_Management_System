@@ -36,7 +36,7 @@ public class Building {
     public Building(List<Floor> fList) {
         this.floors = new ArrayList<>(fList);         //making a new ArrayList and copying the parameter into it to avoid global modify 
                                                     //c++ we have issue with pass by refrence,same logic to avoid that
-        // TODO: Implementation
+       //TODO: Load building config from DB 
 
     }
 
@@ -51,15 +51,12 @@ public class Building {
      * TODO: Handle case when floor number doesn't exist
      */
     public Floor getFloor(int floorNumber) {            //<<getter method here! used from CONTROLLER 
-        // TODO: Implementation
+        if((floors.size())>=floorNumber){
+          return floors.get(floorNumber);
+        }else{
+          System.out.println("getFloor unable to find floor");
+        }
         return null;
     }
 
-
-    public void main(String arg[]){
-      //Testing Data
-
-      Building FCI = new Building()
-      System.out.println("");
-    }
 }
