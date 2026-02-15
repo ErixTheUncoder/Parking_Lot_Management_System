@@ -54,7 +54,6 @@ public class Ticket {
      */
     private LocalDateTime entryTimestamp;
 
- 
    /**
      * Assigned parking spot ID (foreign key to spot)
     /*
@@ -62,76 +61,116 @@ public class Ticket {
     */ //[Note : this is not kept as it is hard to lookup in DB]
 
        /*****************************************************/
-    private long DBspotID;    //<<<<this is used to make connection with datbase primary key which is fast working with 
+    private long DBspotID;    
     
     //the above is set by the entryGate to keep the track as a FOREIGN kEY IN THE DB. 
 
+    // ---------------- NEW FIELDS ----------------
+    private boolean isPaid;
+    private boolean isActive;
+
     /**
      * Constructor
-     * 
-     * @param licensePlate Vehicle's license plate
-     * @param spotID Assigned spot identifier
-     * 
-     * TODO: Generate unique ticketID (UUID or sequential)
-     * TODO: Set licensePlate
-     * TODO: Set DBspotID
-     * TODO: Record current timestamp as entryTimestamp
-     * TODO: Validate parameters are not null/invalid
      */
-    public Ticket(String licensePlate, long DBspotID) {   //long is used for having more range of number
-        // TODO: Implementation
+    public Ticket(String licensePlate, long DBspotID, boolean activeS) {   
+        
+        if (licensePlate == null || licensePlate.trim().isEmpty()) {
+            throw new IllegalArgumentException("License plate cannot be null or empty.");
+        }
+
+        if (DBspotID <= 0) {
+            throw new IllegalArgumentException("Spot ID must be positive.");
+        }
+
+        this.licensePlate = licensePlate.replaceAll("\\s+", "").toLowerCase();
+        this.DBspotID = DBspotID;
+        this.entryTimestamp = LocalDateTime.now();
+
+        // T-PLATE-TIMESTAMP format
+        this.ticketID = "T-" + this.licensePlate + "-" + System.currentTimeMillis();
+
+        this.isPaid = false;      // default unpaid
+        this.isActive = activeS;  // set active state
     }
 
     //used by DBservice for remaking the object from database 
-    public Ticket(String tickID, long spotID , String licenId, LocalDateTime entryT){
-        // TODO: Implementation
+    public Ticket(String tickID, long spotID , String licenId, 
+                  LocalDateTime entryT, boolean isPaid, boolean isActive){
+        
+        if (tickID == null || tickID.trim().isEmpty()) {
+            throw new IllegalArgumentException("Ticket ID cannot be null or empty.");
+        }
+
+        if (licenId == null || licenId.trim().isEmpty()) {
+            throw new IllegalArgumentException("License plate cannot be null or empty.");
+        }
+
+        if (spotID <= 0) {
+            throw new IllegalArgumentException("Spot ID must be positive.");
+        }
+
+        if (entryT == null) {
+            throw new IllegalArgumentException("Entry timestamp cannot be null.");
+        }
+
+        this.ticketID = tickID;
+        this.DBspotID = spotID;
+        this.licensePlate = licenId.replaceAll("\\s+", "").toLowerCase();
+        this.entryTimestamp = entryT;
+        this.isPaid = isPaid;
+        this.isActive = isActive;
     }
     
     /**
      * Get the ticket's unique identifier
-     * 
-     * @return The ticket ID
-     * 
-     * TODO: Implement getter
      */
     public String getTicketID() {
-        // TODO: Implementation
-        return null;
+        return ticketID;
     }
     
     /**
      * Get the vehicle's license plate
-     * 
-     * @return The license plate
-     * 
-     * TODO: Implement getter
      */
     public String getLicensePlate() {
-        // TODO: Implementation
-        return null;
+        return licensePlate;
     }
     
     /**
      * Get the assigned spot ID
-     * 
-     * @return The spot ID
-     * 
-     * TODO: Implement getter
      */
     public long getSpotID() {
-        // TODO: Implementation
-        return 0;
+        return DBspotID;
     }
     
     /**
      * Get the entry timestamp
-     * 
-     * @return The timestamp when ticket was issued
-     * 
-     * TODO: Implement getter
      */
     public LocalDateTime getEntryTimestamp() {
-        // TODO: Implementation
-        return null;
+        return entryTimestamp;
+    }
+
+    // ----------- NEW METHODS -----------
+
+    public boolean getisPaid() {
+        return isPaid;
+    }
+
+    // Original simple setter (always mark as paid)
+    public void setPaid() {
+        this.isPaid = true;
+    }
+
+    // New setter with parameter (as requested)
+    public void setPaid(boolean newStat){
+        this.isPaid = newStat;
+    }
+
+    public boolean getStat(){
+        return isActive;
+    }
+
+    public boolean changeStat(boolean newStat){
+        this.isActive = newStat;
+        return this.isActive;
     }
 }
