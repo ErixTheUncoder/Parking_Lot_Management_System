@@ -14,7 +14,7 @@ public class AdminWindow{
     this.spot = spot;
   }
 
-  public void viewAllFloor(){
+  public void viewAllFloor(){ //TODO: Change the print into GUI functions later
     int index = 0;
     int allFloor = 0;
     while(building.getFloor(index)!=null){
@@ -69,6 +69,8 @@ public class AdminWindow{
     System.out.println("  └──────────────┴───────┴───────────┴──────────┘");
     System.out.println();
   }
+
+
   
   /**
    * View all spots for all floors in the building
@@ -105,6 +107,91 @@ public class AdminWindow{
     System.out.println("  Occupied:  " + totalBuildingOccupied);
     System.out.println();
   }
+
+  public void viewAllParkedVehicle(){
+    System.out.println("\n╔════════════════════════════════════════════════╗");
+    System.out.println("║       All Parked Vehicles in Building         ║");
+    System.out.println("╚════════════════════════════════════════════════╝\n");
+    
+    int totalParkedVehicles = 0;
+    int floorIndex = 0;
+    
+    System.out.println("  ┌──────────────┬─────────┬────────────────┬──────────────┐");
+    System.out.println("  │ License Plate│ Floor   │ Spot Name      │ Spot Type    │");
+    System.out.println("  ├──────────────┼─────────┼────────────────┼──────────────┤");
+    
+    // Iterate through all floors
+    while (building.getFloor(floorIndex) != null) {
+      Floor floor = building.getFloor(floorIndex);
+      List<Spot> allSpots = floor.getAllSpots();
+      
+      // Check each spot for occupied vehicles
+      for (Spot spot : allSpots) {
+        if (spot.isOccupied()) {
+          String licensePlate = spot.getCurrentVehicle();
+          String spotName = spot.getSpotName();
+          String spotType = spot.getSpotType().toString();
+          
+          System.out.printf("  │ %-12s │ %7d │ %-14s │ %-12s │%n", 
+                           licensePlate, floorIndex, spotName, spotType);
+          totalParkedVehicles++;
+        }
+      }
+      
+      floorIndex++;
+    }
+    
+    System.out.println("  └──────────────┴─────────┴────────────────┴──────────────┘");
+    System.out.println("\n  Total Parked Vehicles: " + totalParkedVehicles);
+    System.out.println();
+  }
+  
+  /**
+   * View parked vehicles on a specific floor
+   * Overloaded method that accepts a floor number parameter
+   * @param floorNumber The floor number to view
+   */
+  public void viewAllParkedVehicle(int floorNumber){
+    Floor floor = building.getFloor(floorNumber);
+    
+    if (floor == null) {
+      System.out.println("Floor " + floorNumber + " not found!");
+      return;
+    }
+    
+    System.out.println("\n╔════════════════════════════════════════════════╗");
+    System.out.println("║   Parked Vehicles on Floor " + floorNumber + "                ║");
+    System.out.println("╚════════════════════════════════════════════════╝\n");
+    
+    List<Spot> allSpots = floor.getAllSpots();
+    int parkedCount = 0;
+    
+    System.out.println("  ┌──────────────┬────────────────┬──────────────┐");
+    System.out.println("  │ License Plate│ Spot Name      │ Spot Type    │");
+    System.out.println("  ├──────────────┼────────────────┼──────────────┤");
+    
+    for (Spot spot : allSpots) {
+      if (spot.isOccupied()) {
+        String licensePlate = spot.getCurrentVehicle();
+        String spotName = spot.getSpotName();
+        String spotType = spot.getSpotType().toString();
+        
+        System.out.printf("  │ %-12s │ %-14s │ %-12s │%n", 
+                         licensePlate, spotName, spotType);
+        parkedCount++;
+      }
+    }
+    
+    if (parkedCount == 0) {
+      System.out.println("  │            No vehicles parked on this floor             │");
+    }
+    
+    System.out.println("  └──────────────┴────────────────┴──────────────┘");
+    System.out.println("\n  Parked Vehicles on Floor " + floorNumber + ": " + parkedCount);
+    System.out.println();
+  }
+
+  //-----------------------------------------------------------------------------------------
   
   /**
    * Main method for testing AdminWindow functionality
@@ -126,8 +213,15 @@ public class AdminWindow{
     
     // Test viewAllSpotsAllFloors
     admin.viewAllSpotsAllFloors();
+    
+    // Test viewAllParkedVehicle - all vehicles in building
+    admin.viewAllParkedVehicle();
+    
+    // Test viewAllParkedVehicle - specific floors (overloaded method)
+    admin.viewAllParkedVehicle(0);
+    admin.viewAllParkedVehicle(2);
   }
-  
+
   /**
    * Helper method to create test building with dummy data
    */
