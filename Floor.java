@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,16 +64,29 @@ public class Floor {
      * loading floor layout from database/configuration(loader class) >>use the below constructor to initialise Floor obj
      */
     public Floor(int floorNumber , List<List<Spot>>R) {
-      this.floorNumber = floorNumber;
-      this.rows = R;
+        this.floorNumber = floorNumber;
+        this.rows = R;
 
-          // Initialize flatAccess map
-      this.flatAccess = new HashMap<>();
-      for (List<Spot> row : R) {
-        for (Spot spot : row) {
-            this.flatAccess.put(spot.getDBSpotID(), spot);
+        // Initialize flatAccess map
+        this.flatAccess = new HashMap<>();
+        for (List<Spot> row : R) {
+            for (Spot spot : row) {
+                this.flatAccess.put(spot.getDBSpotID(), spot);
+            }
+        } // Close first for loop
+
+        // Initialize flatSearchMap
+        this.flatSearchMap = new HashMap<>();
+
+        // Populate flatSearchMap with available spots
+        for (List<Spot> row : R) {
+            for (Spot spot : row) {
+                if (!spot.isOccupied() && !spot.getStatus()) {  // Available spots only
+                    this.flatSearchMap.putIfAbsent(spot.getSpotType(), new ArrayList<>());
+                    this.flatSearchMap.get(spot.getSpotType()).add(spot.getDBSpotID());
+                }
+            }
         }
-    }
     }
     
     /**
@@ -100,17 +114,17 @@ public class Floor {
             }
 
           case SpotType.HANDICAPPED -> {
-            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.HANDICAPPED);
             return compactSpotIDs;
             }
 
           case SpotType.LARGE -> {
-            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.LARGE);
             return compactSpotIDs;
                 }
           
           case SpotType.REGULAR -> {
-            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.REGULAR);
             return compactSpotIDs;
                 }
           
@@ -139,6 +153,14 @@ public class Floor {
     public Spot getSpot(long DBspotID) {              //this is used by exitGate or Admin to get a specific spot only
                                                     //this is used by entryGate to access the selected spot by customer and modify it      
         return flatAccess.get(DBspotID);  // O(1) lookup, returns null if not found
-
+    }
+    
+    /**
+     * Get the floor number
+     * 
+     * @return The floor number identifier
+     */
+    public int getFloorNumber() {
+        return floorNumber;
     }
 }
