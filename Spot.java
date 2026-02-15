@@ -1,14 +1,17 @@
 /**
- * Spot - Structural/Data Class (The "Pillar")
+ * Spot - Structural Class ("Pillar")
  * 
  * DESCRIPTION:
  * Represents an individual parking spot. Self-aware of its identity but does
  * not store its price directly to avoid data inconsistency.
  * 
  * STATE:
- * - spotID: Unique identifier
+ * - spotID: Unique identifier [same as Database]
+ * - spotName : (e.g., "F1-R1-S1" = Floor 1, Row 1, Spot 1)<<<<<for printing and display 
  * - SpotType: The type/category of this spot (Enum)
  * - isOccupied: Boolean indicating current occupancy status
+ * - currentVehicle: the licensePlate no(String) of the currently occupied vehicle {used for Admin panel to see cureently parked vehicle} 
+ * - isClosed : boolean logic for maintenance.
  * 
  * BEHAVIOR:
  * Acts as the anchor for the Vehicle Plate during the "Stay" period.
@@ -17,7 +20,8 @@
  * 
  * DESIGN PRINCIPLE:
  * Does NOT store price to avoid data inconsistency. All pricing queries
- * go through PriceRegistry ensuring every EV spot in the mall charges the same.
+ * go through PriceRegistry ensuring every spot of same kind in the mall charges the same 
+ * single update in the priceRegistry changes all price of same type of spots 
  * 
  * RELATIONSHIPS:
  * - Contained by Floor (many-to-1)
@@ -25,11 +29,22 @@
  * - Referenced by Ticket via spotID
  */
 public class Spot {
-    
+
+//===================================structural data
+    private int floorNum;
+    private int rowNum;
+    private int spotNum;
+
+    //these are used to make up the spotName<<<<<
+    //these are loaded from database 
+
+//===================================+
     /**
-     * Unique identifier for this spot
+     * Unique identifier for this spot[same as Database id]
      */
-    private int spotID;
+    private long  DBspotID;
+
+    private String spotName; //<<<<<for printing and display  (e.g., "F1-R1-S1" = Floor 1, Row 1, Spot 1)
     
     /**
      * The type/category of this parking spot
@@ -41,20 +56,23 @@ public class Spot {
      * Current occupancy status
      * True if a vehicle is currently parked here
      */
-    private boolean isOccupied;   //<<it will be asked from DB if a spot is till empty?
+    private boolean isOccupied;   
+
+    private String currentVehicle; // the licensePlate no(String) of the currently occupied vehicle {used for Admin panel to see cureently parked vehicle} 
     
     private boolean isClosed;  /// <<< kept for future maintenance to close a spot!
     /**
      * Constructor
      * 
-     * @param spotID Unique spot identifier
+     * @param DBspotID Unique spot identifier
      * @param spotType The type of this spot
      * 
      * TODO: Initialize all fields
      * TODO: Validate that spotID is positive
-     * TODO: Set initial occupancy to false
+     * TODO: set the occupancy and current vehicle[NULL value set if empty]
      */
-    public Spot(int spotID, SpotType spotType) {
+    public Spot(long DBspotID, SpotType spotType , boolean isOccup , String currV, int floorN , int rowN , int spotN) {
+        //concatenate the spotName usinf floorN,rowN,spotN<<<<<<<<<<<<<<<<
         // TODO: Implementation
     }
     
@@ -65,7 +83,7 @@ public class Spot {
      * 
      * TODO: Implement getter
      */
-    public int getSpotID() {
+    public long getDBSpotID() {
         // TODO: Implementation
         return 0;
     }
@@ -89,7 +107,7 @@ public class Spot {
      * 
      * TODO: Implement getter
      */
-    public boolean isOccupied() {   /// >>> this will make the DB call to double sure!
+    public boolean isOccupied() {   
         // TODO: Implementation
         return false;
     }
@@ -98,16 +116,27 @@ public class Spot {
      * Set the occupancy status of this spot
      * 
      * @param occupied The new occupancy status
+     * @param currV is the license plate number
      * 
      * TODO: Implement setter
      * TODO: Consider adding validation or logging
-     * TODO: Consider triggering events for monitoring systems
      */
-    public void setOccupied(boolean occupied) {  ///>> set in the database it is occupied!!
+    public void setOccupied(boolean occupied , String currV) {  
         // TODO: Implementation
     }
 
     public boolean getStatus(){
         return  isClosed;
     }
+    public String getCurrentVehicle(){
+        //error handling 
+        return currentVehicle;
+    }
+    public String getSpotName(){
+     ///this is used by GUI
+        return spotName;
+    }
 }
+
+
+// note on loader : loader will not load those which current status is closed into the Floor flatSearchMap***

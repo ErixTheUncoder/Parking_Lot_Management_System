@@ -24,6 +24,10 @@ import java.util.Map;
  * - Used by searchEngine to find available spots
  */
 public class Floor {
+
+    //=====================
+        Map<Long, Spot> flatAccess; //used for O(1) access by DBspotID       //DBspotID name is strange but it is used so 
+    //=======================
     
     /**
      * The floor number identifier
@@ -41,7 +45,7 @@ public class Floor {
      * Maps SpotType to List of available spot IDs
      * Enables fast spot finding without iterating through 2D structure
      */
-    private Map<SpotType, List<Long>> flatSearchMap;            
+    private Map<SpotType, List<Long>> flatSearchMap;        //<<<< an observer updates it to keep it up to date   
 
     //the Long is used here for a reason, 
     //each spot has an ID which is string but Database uses a long as a PK for faster lookup, though original name of spot can be found from the spot class
@@ -79,14 +83,14 @@ public class Floor {
     /**
      * Get a specific spot by its ID
      * 
-     * @param spotID The spot identifier
+     * @param DBspotID The spot identifier[DB name used here as this id is same as database]<<<<<<<<<<<<<<<
      * @return The Spot object, or null if not found
      * 
      * TODO: Search through the 2D rows structure
-     * TODO: Consider maintaining a separate Map<Integer, Spot> for O(1) access by ID
+     * TODO: Consider maintaining a separate Map<long, Spot> for O(1) access by ID  <<<<<<<<
      * TODO: Handle invalid spot IDs
      */
-    public Spot getSpot(long  spotID) {              //this is used by exitGate or Admin to get a specific spot only
+    public Spot getSpot(long  DBspotID) {              //this is used by exitGate or Admin to get a specific spot only
                                                     //this is used by entryGate to access the selected spot by customer and modify it      
         // TODO: Implementation
         return null;
