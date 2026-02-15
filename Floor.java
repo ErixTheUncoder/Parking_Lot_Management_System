@@ -45,7 +45,7 @@ public class Floor {
      * Maps SpotType to List of available spot IDs
      * Enables fast spot finding without iterating through 2D structure
      */
-    private Map<SpotType, List<Long>> flatSearchMap;        //<<<< an observer updates it to keep it up to date   
+    private Map<SpotType, List<Long>> flatSearchMap;       
 
     //the Long is used here for a reason, 
     //each spot has an ID which is string but Database uses a long as a PK for faster lookup, though original name of spot can be found from the spot class
