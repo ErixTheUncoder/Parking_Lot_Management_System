@@ -1,0 +1,10 @@
+1.exitGate class
+
+a.pricingRegistry
+c.invoice
+
+
+//========================
+d.fineManager >>checks if fine is applicable , if applicable calculate it [it need to be saved to Database]
+b.payment >> make receipt , receive cash/card , showRemaining balance (if any)
+//=======================
