@@ -136,7 +136,8 @@ public class Spot {
      ///this is used by GUI
         return spotName;
     }
+    public void releaseVehicle(){
+        this.isOccupied=false;
+        this.currentVehicle=null;
+    }
 }
-
-
-// note on loader : loader will not load those which current status is closed into the Floor flatSearchMap***
