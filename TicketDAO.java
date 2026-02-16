@@ -7,9 +7,9 @@ public class TicketDAO {
     public TicketDAO() {
     }
     
-   // void saveNewTicketAndOccupySpot(Ticket t, Spot s);  //used in TicketEngine >>refer
-   // void closeTicketAndFreeSpot(Ticket t, Spot s);  //used in TicketEngine >>refer
-   // boolean isSpotActuallyFree(long id);         //used in entryGate to double check>>refer
+   void saveNewTicketAndOccupySpot(Ticket t, Spot s);  //used in TicketEngine >>refer
+   void closeTicketAndFreeSpot(Ticket t, Spot s);  //used in TicketEngine >>refer
+   boolean isSpotActuallyFree(long id);         //used in entryGate to double check>>refer
 } 
 
 

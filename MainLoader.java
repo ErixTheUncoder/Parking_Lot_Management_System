@@ -23,7 +23,7 @@ public class MainLoader {
         AllocationEngine allocEngine = new AllocationEngine(building, registry, new SimpleSorter());
 
         // 5. Open Windows and Pass References
-        // Now everyone is looking at the SAME heap objects
+        // Now everything is looking at the SAME heap objects
         new EntryGateUI(allocEngine, ticketEngine).setVisible(true);
         new AdminWindowUI(building, ...).setVisible(true);
         //... other window ExitGateUI
