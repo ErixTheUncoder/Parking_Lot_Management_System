@@ -114,8 +114,8 @@ public class Floor {
             }
 
           case SpotType.HANDICAPPED -> {
-            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.HANDICAPPED);
-            return compactSpotIDs;
+            List<Long> handicapSpotIDs = flatSearchMap.get(SpotType.HANDICAPPED);          
+            return handicapSpotIDs;
             }
 
           case SpotType.LARGE -> {

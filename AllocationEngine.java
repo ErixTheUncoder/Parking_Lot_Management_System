@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 public class AllocationEngine {
     private final AllocStrategy strategy;     //holding the reference to the strategy 
-    private final Building building; // Access to floors using getFloor(int floorNumber)
-    private final CompatibilityRegistry registry;  
+    private final Building building; // Access to floors using getFloor(int floorNumber), floor has a flat search map for finding spot
+    private final CompatibilityRegistry registry;   // checking suitable spot types for a particular vehicle type 
 
     public AllocationEngine(Building b, CompatibilityRegistry r, AllocStrategy s) {
         this.building = b;
