@@ -261,16 +261,32 @@ public class Floor {
     }
     //====================================== to keep the flatSearchMap updated ==============[during entry , exit ]
 
+    // defined as :  Map<SpotType, List<Long>> flatSearchMap;
+    /**
+     * intialised as :for (List<Spot> row : R) {
+            for (Spot spot : row) {
+                if (!spot.isOccupied() && !spot.getStatus()) {  // Available spots only
+                    this.flatSearchMap.putIfAbsent(spot.getSpotType(), new ArrayList<>());
+                    this.flatSearchMap.get(spot.getSpotType()).add(spot.getDBSpotID());
+                }
+            }
+        }
+     */
+    public void updateFlatSearchMap(Spot spot ,boolean isEntryCall ){
+        SpotType T=spot.getSpotType();
+        Long spotI = spot.getDBSpotID();
 
+        if (T == null || !flatSearchMap.containsKey(T)){
+            System.out.println("Spot type do not exist ");
+        }
+        //if it is from a call from the entryGate , spot id will be removed from search map
+        if(isEntryCall){
+            flatSearchMap.get(T).remove(spotI);
+        }
+         //if it is from a call from the exitGate , spot id will be added to search map
+         else{
+            flatSearchMap.get(T).addLast(spotI);
+         }
 
-
-
-
-
-
-
-
-
-
-
+    }
 }
