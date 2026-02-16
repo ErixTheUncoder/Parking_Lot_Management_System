@@ -39,8 +39,7 @@ public class CompatibilityRegistry {
      * Value: List of allowed SpotTypes for that vehicle
      */
      //"hardcoded config that shouldn't change"
- //check it please again!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    private Map<VehicleType, List<SpotType>> AllowedSpotType= Map.of(
+    private final  Map<VehicleType, List<SpotType>> AllowedSpotType= Map.of(
     VehicleType.MOTORCYCLE, List.of(SpotType.COMPACT),
     VehicleType.CAR, List.of(SpotType.COMPACT, SpotType.REGULAR),
     VehicleType.SUV, List.of(SpotType.REGULAR),
@@ -50,15 +49,9 @@ public class CompatibilityRegistry {
     );                   
     
     /**
-     * Constructor
+     * Constructor : default 
      * 
-     * TODO: Initialize the AllowedSpotType
-     * TODO: Handle initialization errors gracefully
      */
-    public CompatibilityRegistry() {
-        // TODO: Implementation
-    }
-    
     
     /**
      * Get all allowed spot types for a specific vehicle type
@@ -66,13 +59,18 @@ public class CompatibilityRegistry {
      * @param vehicleType The type of vehicle
      * @return List of allowed SpotTypes, or empty list if not found
      * 
-     * TODO: Look up allowed types in AllowedSpotType
-     * TODO: Handle case when vehicle type is not in registry
-     * TODO: Return defensive copy of list to prevent external modification
      */
+   
     public List<SpotType> getAllowedSpotTypes(VehicleType vehicleType) {
-        // TODO: Implementation
-        return null;
+        // 1. Handle the case where vehicleType might be null
+        if (vehicleType == null) {
+            return List.of(); // Return an empty unmodifiable list
+        }
+        // 2. Look up the list in your map
+        List<SpotType> allowed = AllowedSpotType.get(vehicleType);
+
+        // 3. Return the list, or an empty one if the key wasn't found // List.copyOf() provides that "defensive copy" that is also unmodifiable
+        return (allowed != null) ? List.copyOf(allowed) : List.of();
     }
     
     /**
@@ -82,12 +80,16 @@ public class CompatibilityRegistry {
      * @param spotType The type of spot
      * @return True if compatible, false otherwise
      * 
-     * TODO: Get allowed types for the vehicle
-     * TODO: Check if spotType is in the allowed list
-     * TODO: Handle null parameters
      */
     public boolean isCompatible(VehicleType vehicleType, SpotType spotType) {
-        // TODO: Implementation
-        return false;
+        if (vehicleType == null || spotType == null) {
+            return false;
+        }
+        
+        // Reuse your previous method
+        List<SpotType> allowed = getAllowedSpotTypes(vehicleType);
+        
+        // Check if the specific spotType is in that list
+        return allowed.contains(spotType);
     }
 }
