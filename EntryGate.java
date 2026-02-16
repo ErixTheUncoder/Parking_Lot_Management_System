@@ -1,15 +1,10 @@
 /**
- * EntryGate - Registry & Logic Class (The "Expert" / "Craftsman")
+ * EntryGate - Registry & Logic Class (Expert)
  * 
  * DESCRIPTION:
  * Orchestrates the vehicle entry process. Acts as "The Handshake" between
  * a vehicle and the parking system.
  * 
- * RESPONSIBILITIES:
- * 1. Fetch allowed spot types from CompatibilityRegistry
- * 2. Query Floor(s) for available spots of allowed types
- * 3. Perform atomic DB update to prevent race conditions
- * 4. Generate and return Ticket
  * 
  * ARCHITECTURE - THE HANDSHAKE:
  * The EntryGate coordinates multiple components to safely assign a parking spot:
@@ -17,9 +12,6 @@
  * - Building/Floor: Where are the available spots?
  * - Database: Atomic reservation to prevent double-booking
  * 
- * CONCURRENCY SAFETY:
- * Uses atomic DB update to prevent two gates from assigning the same spot
- * at the same millisecond (critical for multi-gate systems).
  * 
  * RELATIONSHIPS:
  * - Accesses Building to find floors and spots
@@ -132,20 +124,5 @@ public class EntryGate {
         return false;
     }
 }
-
-
-/*string licenseplate= vehicleA.getLicensePlate();
-
-field A: license plate
-field B : type 
-
-//get selected type of parking the person wants 
->>> compact , regular 
-
- Vehicle a = new Vechicle(licen_plate,type);
-
- //==entry System
-
- A.processEntry(Vehicle a);*/
 
 

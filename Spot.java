@@ -148,4 +148,7 @@ public class Spot {
         this.isOccupied=false;
         this.currentVehicle=null;
     }
+    public int getFloorNum(){
+        return floorNum;
+    }
 }
