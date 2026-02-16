@@ -137,8 +137,10 @@ public class Spot {
         return isClosed;
     }
     public String getCurrentVehicle(){
-        //error handling 
-        return currentVehicle;
+       if (this.currentVehicle == null) {
+        return ""; // error handling
+        }
+         return this.currentVehicle;
     }
     public String getSpotName(){
      ///this is used by GUI
