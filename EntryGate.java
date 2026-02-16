@@ -22,6 +22,8 @@ public class EntryGate extends Gate{
 
     private Vehicle newVehicle;
     private Spot chosenSpot;
+
+    //==might not be needed >>>>>>>>>>>
     private Ticket freshTicket;
 
     /**

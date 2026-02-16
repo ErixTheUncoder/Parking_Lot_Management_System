@@ -27,8 +27,27 @@ public class AllocationEngine {
 
         // 3.the strategy rank them and give  the top 5
         strategy.sortAndLimit(allCandidates);
-        
+
+        //I need the SpotDAO to give me the 
 
         //return ;
     }
 }
+
+        /**public static Spot findById(long spotId) {
+        String sql = "SELECT * FROM spots WHERE spot_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setLong(1, spotId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return createSpotFromResultSet(rs);
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error finding spot by ID: " + e.getMessage());
+        }
+        return null;
+     } */
