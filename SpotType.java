@@ -26,39 +26,26 @@ public enum SpotType {
     
     /**
      * Compact parking spot - for smaller vehicles
-     * 
-     * TODO: Define this enum constant
      */
     COMPACT,
     
     /**
      * Regular/standard parking spot - most common type
-     * 
-     * TODO: Define this enum constant
      */
     REGULAR,
     
     /**
      * Large parking spot - for bigger vehicles (SUVs, trucks)
-     * 
-     * TODO: Define this enum constant
      */
     LARGE,
     
     /**
      * Parking spot for  Vehicle with reservation 
-     * 
-     * TODO: Define this enum constant
      */
     RESERVED,
     
     /**
      * Handicapped/accessible parking spot
-     * 
-     * TODO: Define this enum constant
      */
     HANDICAPPED;
-    
-    // TODO: Consider adding display names or descriptions
-    // TODO: Consider adding methods to get human-readable labels
 }
