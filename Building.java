@@ -59,4 +59,9 @@ public class Building {
         return null;
     }
 
+    public int getTotalFloors(){
+        int numFloor = floors.size();
+        return numFloor;
+    }
+
 }
