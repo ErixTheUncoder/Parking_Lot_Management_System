@@ -160,11 +160,6 @@ public class Ticket {
         this.isPaid = true;
     }
 
-    // New setter with parameter (as requested)
-    public void setPaid(boolean newStat){
-        this.isPaid = newStat;
-    }
-
     public boolean getStat(){
         return isActive;
     }

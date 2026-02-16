@@ -16,7 +16,7 @@ public class TicketEngine {
         spot.setOccupied(true, plate);
         
         // 3. Persist the changes
-        // We pass both so the DAO can perform an atomic update
+        //pass both so the DAO can perform an atomic update
         dao.saveNewTicketAndOccupySpot(newTicket, spot);             //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< dao call!
         
         return newTicket;
@@ -26,12 +26,12 @@ public class TicketEngine {
      * Handles the Exit Transaction
      */
     public void processExit(Ticket ticket, Spot spot) {
-        // 1. Update Ticket using its own internal method
+        // 1.Update Ticket using its own internal method
         ticket.changeStat(false); 
-        // Assuming you have a setPaid or similar for the business logic
-        ticket.setPaid(true); 
+        // calling setPaid for the business logic
+        ticket.setPaid(); 
         
-        // 2. Update Spot using its internal method
+        // 2.Update Spot using its internal method
         spot.releaseVehicle();
         
         // 3. Finalize in DB

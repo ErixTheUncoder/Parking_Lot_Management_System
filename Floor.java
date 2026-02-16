@@ -102,37 +102,37 @@ public class Floor {
     public List<Long> findAvailableSpot(SpotType type) {                   //<<<this will be a list of spot IDS 
                                                                         //each spotID is unique in system and belongs to one floor only
         try {
-        switch(type){
-          case SpotType.RESERVED -> { //
-            List<Long> reservedSpotIDs = flatSearchMap.get(SpotType.RESERVED);
-            return reservedSpotIDs;
-            }
-
-          case SpotType.COMPACT -> {
-            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
-            return compactSpotIDs;
-            }
-
-          case SpotType.HANDICAPPED -> {
-            List<Long> handicapSpotIDs = flatSearchMap.get(SpotType.HANDICAPPED);          
-            return handicapSpotIDs;
-            }
-
-          case SpotType.LARGE -> {
-            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.LARGE);
-            return compactSpotIDs;
+            switch(type){
+            case RESERVED -> { //
+                List<Long> reservedSpotIDs = flatSearchMap.get(SpotType.RESERVED);
+                return reservedSpotIDs;
                 }
-          
-          case SpotType.REGULAR -> {
-            List<Long> compactSpotIDs = flatSearchMap.get(SpotType.REGULAR);
-            return compactSpotIDs;
+
+            case COMPACT -> {
+                List<Long> compactSpotIDs = flatSearchMap.get(SpotType.COMPACT);
+                return compactSpotIDs;
                 }
-          
-          default  -> {
-            System.out.println("Unable to find Spot for this type");
-            break;
-          }
-        }
+
+            case HANDICAPPED -> {
+                List<Long> handicapSpotIDs = flatSearchMap.get(SpotType.HANDICAPPED);          
+                return handicapSpotIDs;
+                }
+
+            case LARGE -> {
+                List<Long> compactSpotIDs = flatSearchMap.get(SpotType.LARGE);
+                return compactSpotIDs;
+                    }
+            
+            case REGULAR -> {
+                List<Long> compactSpotIDs = flatSearchMap.get(SpotType.REGULAR);
+                return compactSpotIDs;
+                    }
+            
+            default  -> {
+                System.out.println("Unable to find Spot for this type");
+                break;
+                }
+            }
         } catch (Exception e) {
           System.out.println(e);
         }
@@ -140,6 +140,11 @@ public class Floor {
         return null;
     }
     
+    //==============================================
+     // arrow definition can not have SpotType.x notiation
+    //=============================================
+
+
     /**
      * Get a specific spot by its ID
      * 
@@ -254,4 +259,18 @@ public class Floor {
         }
         return count;
     }
+    //====================================== to keep the flatSearchMap updated ==============[during entry , exit ]
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
