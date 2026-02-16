@@ -23,41 +23,36 @@ public enum VehicleType {
     
     /**
      * Motorcycle - smallest vehicle type
-     * 
-     * TODO: Define this enum constant
      */
     MOTORCYCLE("Motorcycle"),
     
     /**
      * Standard car/sedan
-     * 
-     * TODO: Define this enum constant
      */
     CAR("Car"),
     
     /**
      * Sport Utility Vehicle - larger than standard car
-     * 
-     * TODO: Define this enum constant
      */
     SUV("SUV"),
     
     /**
      * Truck - largest regular vehicle type
-     * 
-     * TODO: Define this enum constant
      */
     TRUCK("Truck"),
     
     /**
      * Handicapped vehicle - special type of vehicle 
-     * 
-     * TODO: Define this enum constant
      */
-    HANDICAPPED("Handicapped");
+    HANDICAPPED("Handicapped"),
+
+     /**
+     * VIP vehicle - premium customer's vehicle
+     */
+    VIP("VIP");
     
-    // TODO: Consider adding display names or descriptions
-    // TODO: Consider adding methods to get human-readable labels
+    // TODO:  add display names or descriptions
+    // TODO:  add methods to get human-readable labels
     
     private final String displayName;
     
