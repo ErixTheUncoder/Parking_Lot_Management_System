@@ -10,8 +10,10 @@ public class TicketEngine {
     /**
      * Handles the Entry Transaction
      */
-    public Ticket processEntry(String plate, Spot spot) {
-        // 1. Create the Ticket (ID, Time, and Status handled by constructor)
+    public Ticket processEntry(Spot spot , Vehicle newVehicle) {
+
+        String plate = newVehicle.getLicensePlate();
+        // 1.Create the Ticket (ID, Time, and Status handled by constructor)
         Ticket newTicket = new Ticket(plate, spot.getDBSpotID(), true);
         
         // 2. Update the Spot object state
@@ -20,14 +22,12 @@ public class TicketEngine {
         //3. update the flatSearchMap index to update search Index inside floor  
         int floorI=spot.getFloorNum();
        
-        //>>>> might need initialisation
         Floor floor= building.getFloor(floorI);
-        floor.updateFlatSearchMap(spot, true);  //true indicates it is from entry
+        floor.updateFlatSearchMap(spot, true);  //true indicates it is from entry which remove the spot
         
+         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< changing  down and TicketDAO>>>>>>>>>>>>>>>>>>>>
         // 4. Persist the changes
-        //pass both so the DAO can perform an atomic update
-        dao.saveNewTicketAndOccupySpot(newTicket, spot);             //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< dao call!
-        
+        dao.saveNewTicketAndOccupySpot(newTicket, spot , newVehicle);            
         return newTicket;
     }
 
@@ -46,7 +46,7 @@ public class TicketEngine {
          //3. update the flatSearchMap index to update search Index inside floor  
         int floorI=spot.getFloorNum();
         Floor floor= building.getFloor(floorI);
-        floor.updateFlatSearchMap(spot, false);  //false indicates it is from exit
+        floor.updateFlatSearchMap(spot, false);  //false indicates it is from exit which will add the spot
         
         // 3. Finalize in DB
         dao.closeTicketAndFreeSpot(ticket, spot); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< dao call !

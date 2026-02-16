@@ -12,7 +12,7 @@ public class AllocationEngine {
         this.strategy = s;
     }
 
-    public List<Long> getAvailableSpotsForVehicle(VehicleType vehicleType) {
+    public List<Spot> getAvailableSpotsForVehicle(VehicleType vehicleType) {
         // 1. Get compatible types 
         List<SpotType> allowedTypes = registry.getAllowedSpotTypes(vehicleType);
         
@@ -26,6 +26,9 @@ public class AllocationEngine {
         }
 
         // 3.the strategy rank them and give  the top 5
-        return strategy.sortAndLimit(allCandidates);
+        strategy.sortAndLimit(allCandidates);
+        
+
+        //return ;
     }
 }

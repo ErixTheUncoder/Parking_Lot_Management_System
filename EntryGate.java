@@ -9,8 +9,6 @@ import java.util.List;
  * 
  * ARCHITECTURE - THE HANDSHAKE:
  * The EntryGate coordinates multiple components to safely assign a parking spot:
- * - Database: Atomic reservation to prevent double-booking
- * 
  * 
  * RELATIONSHIPS:
  * - Accesses Building to find floors and spots
@@ -25,7 +23,6 @@ public class EntryGate extends Gate{
     private Vehicle newVehicle;
     private Spot chosenSpot;
     private Ticket freshTicket;
-
 
     /**
      * Constructor
@@ -43,30 +40,35 @@ public class EntryGate extends Gate{
         //TODO: need null and error handling
     }
 
-    //method receives String licenseNo , VehicleType type
+     //method receives String licenseNo , VehicleType type
+    public void NewArrival(String licenNo , VehicleType type){
+                this.newVehicle = new Vehicle(licenNo, type);
+    }
+
     // ask the allocationEngine to return 5 best spots
     //pass it to swing GUI
-    public List<Long> getSpotToSelect(String licenNo , VehicleType type){
-        this.newVehicle = new Vehicle(licenNo, type);
-        List<Long> viewableSpots;
+    public List<Spot> getSpotToSelect(){
+        if (this.newVehicle == null) {
+             return List.of(); //if no vehicle is set , empty list is returned 
+        }
+        VehicleType type= newVehicle.getVehicleType();
+        List<Spot> viewableSpots;
         viewableSpots= allocEngine.getAvailableSpotsForVehicle(type);
         return viewableSpots;
     }
+//==============================================^^^^^^^^ AllocationEngine needs correction !
 
-    //method to check if the spot is truly free
-    //if free it marks creates chosenSpot and call the processEntry(..) 
+    // call the processEntry(..) which saves ticket,spot,vehicle in DB through TicketDAO
     //from TicketEngine and assign the returned Ticket object to freshTicket
-    //save the vehicle to the DB as well
-    //send a boolean message to show TRUE/FALSE
-    public boolean MarkSelectedSpot(long DBspotID){
 
+    public Ticket MarkSpotAndGetTicket(Spot selectedSpot){   
+        if (selectedSpot == null || selectedSpot.isOccupied()) {
+            // it throws an exception so the UI knows exactly what went wrong
+            throw new IllegalArgumentException("Selected spot is unavailable or invalid.");
+        }else{
+            return ticketEngine.processEntry(chosenSpot, newVehicle);
+        }
     }
-
-    //
-    public Ticket getTicketForPrint(){
-
-    }
-  
 }
 
 
