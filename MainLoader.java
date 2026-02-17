@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class MainLoader {
     public static void main(String[] args) {
         // 1. Initialize Registry
@@ -5,7 +7,8 @@ public class MainLoader {
 
         // 2. Load Data (Building/Floors/Spots)
         // This is to call  DB through Data Access Object to load structure
-
+        // TODO: Load building from database
+        Building building = new Building(new ArrayList<>());
 //>>>>>>>>>>*****use constructor of spot to load them from database*****
         //then group the spot and put in the floor
         //group the floor and put in the building 
@@ -24,8 +27,8 @@ public class MainLoader {
 
         // 5. Open Windows and Pass References
         // Now everything is looking at the SAME heap objects
-        new EntryGateUI(allocEngine, ticketEngine).setVisible(true);
-        new AdminWindowUI(building, ...).setVisible(true);
+        // new EntryGateUI(allocEngine, ticketEngine).setVisible(true);
+        // new AdminWindowUI(building).setVisible(true);
         //... other window ExitGateUI
         //... other windoe ReportWindowUI
     }

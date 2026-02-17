@@ -12,7 +12,7 @@ public class AllocationEngine {
         this.strategy = s;
     }
 
-    public List<Spot> getAvailableSpotsForVehicle(VehicleType vehicleType) {
+    public List<Long> getAvailableSpotsForVehicle(VehicleType vehicleType) {
         // 1. Get compatible types 
         List<SpotType> allowedTypes = registry.getAllowedSpotTypes(vehicleType);
         
@@ -21,16 +21,24 @@ public class AllocationEngine {
         // 2. Gather all candidate IDs from all floors in memory
         for (SpotType type : allowedTypes) {
             for (int i = 0; i < building.getTotalFloors(); i++) {
-                allCandidates.addAll(building.getFloor(i).findAvailableSpot(type));
+                List<Long> spotsOfType = building.getFloor(i).findAvailableSpot(type);
+                if (spotsOfType != null) {
+                    allCandidates.addAll(spotsOfType);
+                }
             }
         }
 
+        return strategy.sortAndLimit(allCandidates);
+
         // 3.the strategy rank them and give  the top 5
-        strategy.sortAndLimit(allCandidates);
+       /* List<Long>sortedSpots= strategy.sortAndLimit(allCandidates);
 
-        //I need the SpotDAO to give me the 
+        List<Spot> sortedObj;
 
-        //return ;
+        //I need the SpotDAO to give me the actual objects , use a 
+        //for loop to call the SPot findByID and add it to sortedObj
+
+        return sortedObj;*/
     }
 }
 

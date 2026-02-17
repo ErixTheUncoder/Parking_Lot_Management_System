@@ -49,12 +49,12 @@ public class EntryGate extends Gate{
 
     // ask the allocationEngine to return 5 best spots
     //pass it to swing GUI
-    public List<Spot> getSpotToSelect(){
+    public List<Long> getSpotToSelect(){
         if (this.newVehicle == null) {
              return List.of(); //if no vehicle is set , empty list is returned 
         }
         VehicleType type= newVehicle.getVehicleType();
-        List<Spot> viewableSpots;
+        List<Long> viewableSpots;
         viewableSpots= allocEngine.getAvailableSpotsForVehicle(type);
         return viewableSpots;
     }
@@ -68,7 +68,7 @@ public class EntryGate extends Gate{
             // it throws an exception so the UI knows exactly what went wrong
             throw new IllegalArgumentException("Selected spot is unavailable or invalid.");
         }else{
-            return ticketEngine.processEntry(chosenSpot, newVehicle);
+            return ticketEngine.processEntry(selectedSpot, newVehicle);
         }
     }
 }
