@@ -15,8 +15,6 @@ public class EntryGateTest {
     
     public static void main(String[] args) {
         System.out.println("========== ENTRY GATE TEST SUITE ==========\n");
-        
-        try {
             // Setup phase
             System.out.println("SETUP PHASE: Initializing parking system...");
             Building building = createTestBuilding();
@@ -27,7 +25,9 @@ public class EntryGateTest {
             // Create engines
             AllocationEngine allocEngine = new AllocationEngine(building, registry, strategy);
             TicketEngine ticketEngine = new TicketEngine(mockDAO, building);
-            
+
+        for(int i=0;i<5;i++){
+            try {
             // Create entry gate
             EntryGate entryGate = new EntryGate(1, building, allocEngine, ticketEngine);
             System.out.println("✓ Parking system initialized successfully\n");
@@ -40,13 +40,13 @@ public class EntryGateTest {
             // Test 2: Get Available Spots
             System.out.println("\nTEST 2: Get Available Spots for Vehicle");
             System.out.println("-".repeat(50));
-            List<Long> availableSpots = testGetAvailableSpots(entryGate);
+            List<Spot> availableSpots = testGetAvailableSpots(entryGate);
             
             // Test 3: Mark Spot and Get Ticket
             System.out.println("\nTEST 3: Mark Spot and Get Ticket");
             System.out.println("-".repeat(50));
             if (!availableSpots.isEmpty()) {
-                testMarkSpotAndGetTicket(entryGate, building, availableSpots.get(0));
+                testMarkSpotAndGetTicket(entryGate,availableSpots.get(0));
             } else {
                 System.out.println("✗ No available spots found. Skipping allocation test.");
             }
@@ -62,14 +62,15 @@ public class EntryGateTest {
             System.err.println("ERROR: " + e.getMessage());
             e.printStackTrace();
         }
-    }
+    } 
+}
     
     /**
      * TEST 1: Create a vehicle with NewArrival and verify it's stored
      */
     private static void testVehicleArrival(EntryGate entryGate) {
         String licensePlate = "ABC-123";
-        VehicleType vehicleType = VehicleType.MOTORCYCLE;
+        VehicleType vehicleType = VehicleType.HANDICAPPED;
         
         System.out.println("Creating vehicle with license plate: " + licensePlate);
         System.out.println("Vehicle type: " + vehicleType);
@@ -85,17 +86,17 @@ public class EntryGateTest {
     /**
      * TEST 2: Get available spots for the registered vehicle
      */
-    private static List<Long> testGetAvailableSpots(EntryGate entryGate) {
+    private static List<Spot> testGetAvailableSpots(EntryGate entryGate) {
         System.out.println("Requesting available spots for registered vehicle...");
         
         try {
-            List<Long> spots = entryGate.getSpotToSelect();
+            List<Spot> spots = entryGate.getSpotToSelect();
             
             if (spots.isEmpty()) {
                 System.out.println("⚠ No available spots returned");
             } else {
                 System.out.println("✓ Available spots found: " + spots.size());
-                System.out.println("  Spot IDs: " + spots);
+                System.out.println("  Spot IDs: " + spots.get(0).getDBSpotID());
             }
             
             return spots;
@@ -108,13 +109,10 @@ public class EntryGateTest {
     /**
      * TEST 3: Mark a spot and retrieve the ticket
      */
-    private static void testMarkSpotAndGetTicket(EntryGate entryGate, Building building, long spotID) {
-        System.out.println("Marking spot " + spotID + " and generating ticket...");
+    private static void testMarkSpotAndGetTicket(EntryGate entryGate, Spot selectedSpot) {
+        System.out.println("Marking spot " + selectedSpot.getDBSpotID() + " and generating ticket...");
         
         try {
-            // Get the actual Spot object
-            Spot selectedSpot = findSpotByID(building, spotID);
-            
             if (selectedSpot == null) {
                 System.out.println("✗ Spot not found in building structure");
                 return;
@@ -149,14 +147,13 @@ public class EntryGateTest {
     /**
      * TEST 4: Validate that state changes propagate correctly
      */
-    private static void testStateValidation(EntryGate entryGate, Building building, List<Long> testedSpots) {
+    private static void testStateValidation(EntryGate entryGate, Building building, List<Spot> testedSpots) {
         System.out.println("Validating state changes in parking system...");
         
         try {
             // Check if the assigned spot is now occupied
             if (!testedSpots.isEmpty()) {
-                long spotID = testedSpots.get(0);
-                Spot spot = findSpotByID(building, spotID);
+                Spot spot = testedSpots.get(0);
                 
                 if (spot != null) {
                     System.out.println("Spot " + spot.getSpotName() + ":");
@@ -172,7 +169,7 @@ public class EntryGateTest {
             
             // Verify other spots remain unoccupied
             System.out.println("\nVerifying unoccupied spots remain available...");
-            Floor floor = building.getFloor(0);
+            Floor floor = building.getFloor(1);
             
             if (floor != null) {
                 List<Spot> allSpots = floor.getAllSpots();
@@ -223,7 +220,7 @@ public class EntryGateTest {
         List<Spot> row2 = new ArrayList<>();
         
         for (int i = 0; i < 4; i++) {
-            row2.add(new Spot(spotID++, SpotType.LARGE, false, null, 1, 0, i));
+            row2.add(new Spot(spotID++, SpotType.HANDICAPPED, false, null, 1, 0, i));
         }
         rows1.add(row2);
         
@@ -237,22 +234,6 @@ public class EntryGateTest {
         floors.add(floor1);
         
         return new Building(floors);
-    }
-    
-    /**
-     * Helper: Find a spot by its database ID
-     */
-    private static Spot findSpotByID(Building building, long spotID) {
-        for (int i = 0; i < building.getTotalFloors(); i++) {
-            Floor floor = building.getFloor(i);
-            if (floor != null) {
-                Spot spot = floor.getSpot(spotID);
-                if (spot != null) {
-                    return spot;
-                }
-            }
-        }
-        return null;
     }
 }
 

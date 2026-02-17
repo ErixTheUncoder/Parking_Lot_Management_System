@@ -69,7 +69,7 @@ public class EntryGate extends Gate{
             throw new IllegalArgumentException("Selected spot is unavailable or invalid.");
         }else{
             newVehicle.setEntryTime(java.time.LocalDateTime.now());
-            VehicleDAO.save(newVehicle);   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+           // VehicleDAO.save(newVehicle);   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             return ticketEngine.processEntry(selectedSpot, newVehicle);
         }
     }

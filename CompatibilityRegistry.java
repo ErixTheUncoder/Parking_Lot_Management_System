@@ -45,7 +45,7 @@ public class CompatibilityRegistry {
     VehicleType.SUV, List.of(SpotType.REGULAR),
     VehicleType.TRUCK, List.of(SpotType.REGULAR),
     VehicleType.VIP, List.of(SpotType.RESERVED),
-    VehicleType.HANDICAPPED, List.of(SpotType.HANDICAPPED, SpotType.REGULAR)
+    VehicleType.HANDICAPPED, List.of(SpotType.HANDICAPPED)
     );                   
     
     /**
