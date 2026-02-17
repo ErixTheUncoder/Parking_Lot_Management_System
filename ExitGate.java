@@ -73,25 +73,6 @@ public class ExitGate {
     private Building building;
     
     /**
-     * Reference to pricing registry
-     */
-    private PriceRegistry priceRegistry;
-    
-    /**
-     * Constructor
-     * 
-     * @param gateID Unique gate identifier
-     * @param building The building this gate serves
-     * 
-     * TODO: Initialize all fields
-     * TODO: Load/inject PriceRegistry
-     * TODO: Validate that building is not null
-     */
-    public ExitGate(int gateID, Building building) {
-        // TODO: Implementation
-    }
-    
-    /**
      * Process vehicle exit - THE COMPLETE BILLING WORKFLOW
      * 
      * @param licensePlate The vehicle's license plate
