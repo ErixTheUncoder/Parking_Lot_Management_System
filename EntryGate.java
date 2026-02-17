@@ -49,16 +49,16 @@ public class EntryGate extends Gate{
 
     // ask the allocationEngine to return 5 best spots
     //pass it to swing GUI
-    public List<Long> getSpotToSelect(){
+    public List<Spot> getSpotToSelect(){
         if (this.newVehicle == null) {
              return List.of(); //if no vehicle is set , empty list is returned 
         }
         VehicleType type= newVehicle.getVehicleType();
-        List<Long> viewableSpots;
+        List<Spot> viewableSpots;
         viewableSpots= allocEngine.getAvailableSpotsForVehicle(type);
         return viewableSpots;
     }
-//==============================================^^^^^^^^ AllocationEngine needs correction !
+//==============================================
 
     // call the processEntry(..) which saves ticket,spot,vehicle in DB through TicketDAO
     //from TicketEngine and assign the returned Ticket object to freshTicket
@@ -68,9 +68,17 @@ public class EntryGate extends Gate{
             // it throws an exception so the UI knows exactly what went wrong
             throw new IllegalArgumentException("Selected spot is unavailable or invalid.");
         }else{
+            newVehicle.setEntryTime(java.time.LocalDateTime.now());
+            VehicleDAO.save(newVehicle);   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             return ticketEngine.processEntry(selectedSpot, newVehicle);
         }
     }
+
+    //=====================================
+        public int getGateID() {
+        return gateID;
+    }
+    //=======================================
 }
 
 

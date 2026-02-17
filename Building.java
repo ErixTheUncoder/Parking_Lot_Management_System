@@ -30,16 +30,12 @@ public class Building {
     /**
      * Constructor
      * 
-     * TODO: Initialize the floors list
-     * TODO: loading building configuration from database
      */
     public Building(List<Floor> fList) {
-        this.floors = new ArrayList<>(fList);         //making a new ArrayList and copying the parameter into it to avoid global modify 
-                                                    //c++ we have issue with pass by refrence,same logic to avoid that
-       //TODO: Load building config from DB 
+        this.floors = new ArrayList<>(fList);         
 
     }
-
+    //=======================================================================
     
     /**
      * Retrieve a specific floor by its number              //access existing floor [floor ID is simple INT]

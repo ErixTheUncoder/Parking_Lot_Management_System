@@ -83,7 +83,6 @@ public class Spot {
         this.spotNum = spotN;
         this.isClosed = false;
         this.spotName = String.format("F%d-R%d-S%d",floorN,rowN,spotN);
-
     }
     
     /**

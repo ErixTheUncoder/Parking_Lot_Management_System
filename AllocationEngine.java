@@ -12,7 +12,7 @@ public class AllocationEngine {
         this.strategy = s;
     }
 
-    public List<Long> getAvailableSpotsForVehicle(VehicleType vehicleType) {
+    public List<Spot> getAvailableSpotsForVehicle(VehicleType vehicleType) {
         // 1. Get compatible types 
         List<SpotType> allowedTypes = registry.getAllowedSpotTypes(vehicleType);
         
@@ -28,34 +28,24 @@ public class AllocationEngine {
             }
         }
 
-        return strategy.sortAndLimit(allCandidates);
-
         // 3.the strategy rank them and give  the top 5
-       /* List<Long>sortedSpots= strategy.sortAndLimit(allCandidates);
+       List<Long>sortedSpots= strategy.sortAndLimit(allCandidates);
+       List<Spot> sortedObj = new ArrayList<>();
 
-        List<Spot> sortedObj;
-
-        //I need the SpotDAO to give me the actual objects , use a 
-        //for loop to call the SPot findByID and add it to sortedObj
-
-        return sortedObj;*/
+       for (Long spotID : sortedSpots) {
+        Spot spot = null;
+            for (int i = 0; i < building.getTotalFloors(); i++) {
+                Floor floor = building.getFloor(i);
+                if (floor != null) {
+                    spot = floor.getSpot(spotID);
+                    if (spot != null) break;
+                }
+            }
+            if (spot != null) {
+                sortedObj.add(spot);}
+        }
+        return sortedObj;
     }
 }
 
-        /**public static Spot findById(long spotId) {
-        String sql = "SELECT * FROM spots WHERE spot_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setLong(1, spotId);
-            ResultSet rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                return createSpotFromResultSet(rs);
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error finding spot by ID: " + e.getMessage());
-        }
-        return null;
-     } */
+        
