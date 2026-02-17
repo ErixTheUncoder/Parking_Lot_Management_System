@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class ExitGate extends Gate{
 
     private TicketEngine ticketEngine;

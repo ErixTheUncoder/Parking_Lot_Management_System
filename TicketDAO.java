@@ -18,5 +18,9 @@ public class TicketDAO {
 
     }
 
+    public Ticket findActiveByLicensePlate(String licensePlate){
+        
+    }
+
 
 }
