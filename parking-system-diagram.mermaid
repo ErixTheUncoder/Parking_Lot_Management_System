@@ -4,19 +4,26 @@ classDiagram
         -List~Floor~ floors
         +Building()
         +addFloor(Floor floor)
-        +getFloor(int floorNumber) Floor
+        +getTotalFloor(int floorNumber) int
     }
 
     class Floor {
+        -Map~Long, Spot~ flatAccess
         -int floorNumber
-        -double extraCharge
         -List~List~Spot~~ rows
-        -Map~SpotType, List~Integer~~ flatSearchMap
-        +Floor(int floorNumber, double extraCharge)
-        +getExtraCharge() double
-        +findAvailableSpot(SpotType type) Integer
-        +getSpot(int spotID) Spot
-        +updateSpotOccupancy(int spotID, boolean isOccupied)
+        -Map~SpotType, List~Long~~ flatSearchMap
+        +Floor(int floorNumber, List~List~Spot~~ R)
+        +findAvailableSpot(SpotType type) List~Long~
+        +getSpot(long DBspotID) Spot
+        +getFloorNumber() int
+        +getAllSpots() List~Spot~
+        +getTotalSpotCount() int
+        +getAvailableSpotCount() int
+        +getOccupiedSpotCount() int
+        +getSpotCountByType(SpotType type) int
+        +getAvailableSpotCountByType(SpotType type) int
+        +getOccupiedSpotCountByType(SpotType type) int
+        +updateFlatSearchMap(Spot spot, boolean isEntryCall) void
     }
 
     class Spot {
@@ -24,18 +31,33 @@ classDiagram
         -SpotType spotType
         -boolean isOccupied
         +Spot(int spotID, SpotType spotType)
-        +getSpotID() int
+        +getDBSpotID() long
         +getSpotType() SpotType
+        +getStatus() boolean
         +isOccupied() boolean
         +setOccupied(boolean occupied)
+        +getCurrentVehicle() String
+        +getSpotName() String
+        +releaseVehicle() void
+        +getFloorNum() int
+
     }
 
     class Vehicle {
         -String licensePlate
         -VehicleType vehicleType
+        -LocalDateTime entryTime
+        -LocalDateTime exitTime
+        -Duration duration
         +Vehicle(String licensePlate, VehicleType vehicleType)
+        +Vehicle(String licensePlate, LocalDateTime entryTime, VehicleType vehicleType)
         +getLicensePlate() String
         +getVehicleType() VehicleType
+        +getEntryTime() LocalDateTime
+        +getExitTime() LocalDateTime
+        +getDuration() Duration
+        +setEntryTime(LocalDateTime entryTime) void
+        +calculateDuration() long
     }
 
     %% Enums
@@ -61,15 +83,14 @@ classDiagram
     class PriceRegistry {
         -Map~SpotType, Double~ baseRates
         +PriceRegistry()
-        +loadFromDatabase()
+        +loadFromDatabase() void
         +getBaseRate(SpotType spotType) Double
-        +updateRate(SpotType spotType, Double rate)
+        +updateRate(SpotType spotType, Double rate) void
     }
 
     class CompatibilityRegistry {
-        -Map~VehicleType, List~SpotType~~ compatibilityMap
+        -Map~VehicleType, List~SpotType~~ AllowedSpotType
         +CompatibilityRegistry()
-        +loadFromDatabase()
         +getAllowedSpotTypes(VehicleType vehicleType) List~SpotType~
         +isCompatible(VehicleType vehicleType, SpotType spotType) boolean
     }
