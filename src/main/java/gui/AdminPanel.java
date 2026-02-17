@@ -1,9 +1,9 @@
 package gui;
 
-import javax.swing.*;
+import db.*;
 import java.awt.*;
 import java.util.List;
-import db.*;
+import javax.swing.*;
 
 public class AdminPanel extends JPanel {
 

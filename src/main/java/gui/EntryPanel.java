@@ -84,7 +84,6 @@ public class EntryPanel extends JPanel {
             return;
         }
 
-        // Keep as String
         Ticket ticket = entryGate.processEntry(vehicle, selectedSpotIDStr);
         if (ticket == null) {
             JOptionPane.showMessageDialog(this, "Selected spot is no longer available.");
@@ -93,7 +92,13 @@ public class EntryPanel extends JPanel {
 
         ticketIdField.setText(ticket.getTicketID());
         entryTimeField.setText(ticket.getEntryTimeFormatted());
-        ticketSpotField.setText(ticket.getSpot().getSpotName());
+
+        // Add null check for spot
+        if (ticket.getSpot() != null) {
+            ticketSpotField.setText(ticket.getSpot().getSpotName());
+        } else {
+            ticketSpotField.setText("N/A");
+        }
 
         JOptionPane.showMessageDialog(this, "Spot reserved! Ticket generated.");
     }

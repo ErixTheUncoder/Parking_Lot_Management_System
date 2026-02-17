@@ -29,7 +29,7 @@ public class EntryGate {
             Floor floor = building.getFloor(i);
             if (floor != null) {
                 for (Spot s : floor.getAllSpots()) {
-                    if (s.getSpotName().equals(spotID)) {
+                    if (String.valueOf(s.getSpotID()).equals(spotID)) {
                         spot = s;
                         break;
                     }
