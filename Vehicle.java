@@ -1,5 +1,6 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Vehicle - Structural Class (The "Pillar")
@@ -152,7 +153,7 @@ public class Vehicle {
    // a critical thing to ponder on why not using INT: think the vehicle was parked 12th  Feb 11:30 and leaving 15th Feb 23:00 , we need a proper method to calculate and store the hour , minute , second
    //}
     
-    public Duration calculateDuration() {
+    public long calculateDuration() {
 
         if (entryTime == null) {
             throw new IllegalStateException("Entry time not set.");
@@ -164,7 +165,15 @@ public class Vehicle {
         if (duration.isNegative()) {
             throw new IllegalStateException("Exit time cannot be before entry time.");
         }
-
-        return duration;
+        
+        long hours = ChronoUnit.HOURS.between(entryTime, exitTime);
+        
+        // If there's a remainder, round up to next hour
+        long minutes = ChronoUnit.MINUTES.between(entryTime, exitTime) % 60;
+        if (minutes > 0) {
+            hours++;
+        }
+        
+        return hours;
     }
 }

@@ -23,7 +23,7 @@ public class EntryGate extends Gate{
     private Vehicle newVehicle;
     private Spot chosenSpot;
 
-    //==might not be needed >>>>>>>>>>>
+    //might not be needed >>>>>>>>>>>
     private Ticket freshTicket;
 
     /**
@@ -32,14 +32,11 @@ public class EntryGate extends Gate{
      * @param gateID Unique gate identifier
      * @param building The building this gate serves
      * 
-     * TODO: Initialize all fields
-     * TODO: Validate that building is not null
      */
     public EntryGate(int gateID, Building building ,AllocationEngine allocE , TicketEngine tickE) {
         super(gateID, building);
         this.allocEngine=allocE;
         this.ticketEngine=tickE;
-        //TODO: need null and error handling
     }
 
      //method receives String licenseNo , VehicleType type
